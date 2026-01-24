@@ -2,7 +2,7 @@ const {sql, poolPromise} = require('../config/configuration');
 
 const forumModel = {
     // on insert, forumId will be auto generated
-    createForum: async (forumData) => {
+    createForumModel: async (forumData) => {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('forumName', sql.NVarChar, forumData.forumName)
@@ -18,6 +18,22 @@ const forumModel = {
                 );
             `)
         return result.recordset[0];
+    },
+
+    // retrieve forums with pagination
+    getPagForumsModel: async (offset) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('offset', sql.Int, offset)
+            .query(`
+                begin
+                    select * from Forums
+                    order by forum_id
+                    offset @offset rows
+                    fetch next 10 rows only
+                end
+            `)
+        return result.recordsets;
     }
 }
 

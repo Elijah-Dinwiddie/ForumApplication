@@ -163,15 +163,33 @@ paths:
     summary: Get all forums
     description: Get all forums
     operationId: getAllForums
+    parameters:
+      - $ref: '#/components/parameters/offset'
     responses:
       '200':
         description: sucessful operation
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/forumDetails'
+              type: object
+              properties:
+                totalCount:
+                  type: integer
+                  description: total number of forums available
+                  examples: [100]
+                limit:
+                  type: integer
+                  description: number of forums returned per request
+                  examples: [10]
+                offset:
+                  type: integer
+                  description: number of posts skippec
+                  examples: [10]
+                posts:
+                  type: array
+                  description: The posts returned for the query
+                  items:
+                    $ref: '#/components/schemas/forumDetails'
       default:
         description: Unable to return values
  /forums/{forumID}:
@@ -495,6 +513,15 @@ components:
       schema:
         type: integer
       description: ID of the post
+    offset:
+      name: offset
+      in: query
+      description: Number offset during pagination
+      required: false
+      schema:
+        type: integer
+        default: 0
+        examples: [10]
   schemas:
     accountDetails:
       type: object

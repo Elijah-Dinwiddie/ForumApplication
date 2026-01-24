@@ -5,27 +5,27 @@ db diagram: https://dbdiagram.io/d/Forum-Web-Application-696d5d8ed6e030a024622c9
 
 
 CREATE TABLE [Accounts] (
-  [account_name] nvarchar,
+  [account_name] nvarchar(100),
   [account_id] int PRIMARY KEY IDENTITY(1, 1),
-  [created_at] nvarchar
+  [created_at] nvarchar(100)
 )
 GO
 
 CREATE TABLE [Forums] (
-  [forum_name] nvarchar,
+  [forum_name] nvarchar(100),
   [forum_id] int PRIMARY KEY IDENTITY(1, 1),
-  [forum_description] nvarchar,
+  [forum_description] nvarchar(100),
   [created_by] int,
-  [created_at] nvarchar
+  [created_at] nvarchar(100)
 )
 GO
 
 CREATE TABLE [Threads] (
-  [thread_name] nvarchar,
+  [thread_name] nvarchar(100),
   [thread_id] int PRIMARY KEY IDENTITY(1, 1),
   [forum_id] int,
   [created_by] int,
-  [created_at] nvarchar
+  [created_at] nvarchar(100)
 )
 GO
 
@@ -34,16 +34,16 @@ CREATE TABLE [Posts] (
   [account_id] int,
   [post_id] int PRIMARY KEY IDENTITY(1, 1),
   [post_number] int,
-  [created_at] nvarchar,
-  [post_text] nvarchar,
+  [created_at] nvarchar(100),
+  [post_text] nvarchar(100),
   [is_deleted] bit
 )
 GO
 
 CREATE TABLE [AccountCredentials] (
   [account_id] int PRIMARY KEY,
-  [email] nvarchar UNIQUE,
-  [password_hash] nvarchar,
+  [email] nvarchar(100) UNIQUE,
+  [password_hash] nvarchar(100),
   [isAdmin] bit
 )
 GO
