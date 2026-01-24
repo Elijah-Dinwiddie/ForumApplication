@@ -1,0 +1,25 @@
+{
+  "name": "forumapplication",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Elijah-Dinwiddie/ForumApplication#readme",
+  "bugs": {
+    "url": "https://github.com/Elijah-Dinwiddie/ForumApplication/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elijah-Dinwiddie/ForumApplication.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "dependencies": {
+    "express": "^5.2.1",
+    "mssql": "^12.2.0"
+  }
+}

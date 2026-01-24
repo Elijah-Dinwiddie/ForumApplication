@@ -1,0 +1,605 @@
+openapi: 3.1.0
+info:
+ title: Public User Forum
+ description: Specification for all of the endpoints on an api used for a web forum. Also included is user accounts
+ version: 1.0.0
+servers:
+ - url: http://example.com/api
+   description: placeholder URL will need to replace
+tags:
+ - name: Accounts
+   description: Access to accounts
+ - name: Forums
+   description: Access to forums
+ - name: Threads
+   description: Access to threads
+ - name: Posts
+   description: Access to posts
+paths:
+ /accounts:
+   post:
+     tags:
+       - Accounts
+     summary: Create a new account
+     description: Create a new account
+     operationId: createAccount
+     requestBody:
+       required: true
+       description: Create a new account in accounts table
+       content:
+         application/json:
+           schema:
+             $ref: '#/components/schemas/accountCreationCredentials'
+     responses:
+       '201':
+         description: sucessfully created
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/accountDetails'
+       '400':
+         description: Not all fields filled out
+       '409':
+         description: Email already registered
+       default:
+         description: Unexpected Error
+   get:
+    tags:
+      - Accounts
+    summary: Get all accounts
+    description: Get all accounts
+    operationId: getAllAccounts
+    responses:
+      '200':
+        description: successful operation
+        content: 
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/accountDetails'
+      default:
+        description: Unable to return values
+ /accounts/{accountID}:
+  get:
+    tags:
+      - Accounts
+    summary: Get account by account ID
+    description: Get account by account ID
+    operationId: getAccount
+    parameters:
+      - $ref: '#/components/parameters/accountID'
+    responses:
+      '200':
+        description: Sucessful operation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accountDetails'
+  patch:
+    tags:
+      - Accounts
+    summary: update account
+    description: update account
+    operationId: updateAccount
+    parameters:
+      - $ref: '#/components/parameters/accountID'
+    requestBody:
+      required: true
+      description: update account information
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accountName:
+                type: string
+                examples: [UpdatedAccountName]
+              email:
+                type: string
+                examples: [test@test.com]
+    responses:
+      '200':
+        description: Account sucessfully updated
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accountDetails'
+      default:
+        description: Unable to update account
+  delete:
+    tags:
+      - Accounts
+    summary: delete account
+    description: delete account
+    operationId: deleteAccount
+    parameters:
+      - $ref: '#/components/parameters/accountID'
+    responses:
+      '200':
+        description: Account deleted
+      default:
+        description: Unable to delete account
+ /forums:
+  post:
+    tags:
+      - Forums
+    summary: Create a new forum
+    description: Create a new forum
+    operationId: createForum
+    requestBody: 
+      required: true
+      description: create a new forum in the Forums Table
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - forumName
+              - forumDescription
+              - creatorID
+            properties:
+              forumName:
+                type: string
+                examples: [Taco Bell History]
+              forumDescription:
+                type: string
+                examples: ["This Forum aims to discuss the History of Taco bell. May things can be discussed, just make sure it comes back to taco"]
+              creatorID:
+                type: integer
+                examples: [1]
+    responses:
+      '201':
+        description: Sucessfully created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/forumDetails'
+      default:
+        description: Unexpected Error
+  get:
+    tags:
+      - Forums
+    summary: Get all forums
+    description: Get all forums
+    operationId: getAllForums
+    responses:
+      '200':
+        description: sucessful operation
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/forumDetails'
+      default:
+        description: Unable to return values
+ /forums/{forumID}:
+  get:
+    tags:
+      - Forums
+    summary: Get forum by forumID
+    description: Get forum by forumID
+    operationId: getForum
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+    responses:
+      '200':
+        description: Sucessful operation
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/forumDetails'
+      default:
+        description: Unable to return values
+  patch:
+    tags:
+      - Forums
+    summary: Update forum by ID
+    description: Update forum by ID
+    operationId: updateForum
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+    requestBody: 
+      required: true
+      description: Update selected thread
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              forumName:
+                type: string
+                examples: [updated forum title]
+              forumDescription:
+                type: string
+                examples: [This is the updated description of the forum]
+    responses:
+      '200':
+        description: Sucessfully updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/forumDetails'
+      default:
+        description: Unable to update forum
+  delete:
+    tags:
+      - Forums
+    summary: delete selected forum
+    description: delete selected forum
+    operationId: deleteForum
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+    responses:
+      '200':
+        description: sucessfully deleted
+      default:
+        description: unable to delete Forum
+ /forums/{forumID}/threads:
+  post:
+    tags:
+      - Threads
+    summary: Create a new thread inside of selected forum
+    description: Create a new Threads
+    operationId: createThread
+    parameters: 
+      - $ref: '#/components/parameters/forumID'
+    requestBody: 
+      required: true
+      description: Create a new thread in the Threads Table
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - threadTitle
+              - threadPost
+              - creatorID
+            properties:
+              threadTitle:
+                type: string
+                examples: [Why are taco's so good?]
+              threadPost:
+                type: string
+                examples: [The flavors of the tacos just work so well. Does anyone know the reason for this?]
+              creatorID:
+                type: integer
+                examples: [1]
+    responses:
+      '201':
+        description: Sucessfully created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/threadDetails'
+      default:
+        description: Unexpected error
+  get:
+    tags:
+      - Threads
+    summary: Get all threads
+    description: Get all threads in forum
+    operationId: getAllThreads
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+    responses:
+      '200':
+        description: sucessful operation
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/threadDetails'
+      default:
+        description: Unable to return values
+ /forums/{forumID}/threads/{threadID}:
+  get:
+    tags:
+      - Threads
+    summary: Get thread by ID
+    description: Get thread by ID
+    operationId: getThread
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/threadID'
+    responses:
+      '200':
+        description: Sucessful operation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/threadDetails'
+      default:
+        description: Unable to return values
+  patch:
+    tags:
+      - Threads
+    summary: Update thread
+    description: Update thread
+    operationId: updateThread
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/threadID'
+    requestBody: 
+      required: true
+      description: update thread
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              threadTitle:
+                type: string
+                examples: [Updated title]
+              threadPost:
+                type: string
+                examples: [Updated post is here now]
+    responses:
+      '200':
+        description: Sucessful operation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/threadDetails'
+      default:
+        description: Unable to return values
+  delete:
+    tags:
+      - Threads
+    summary: delete thread
+    description: delete thread
+    operationId: deleteThread
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/threadID'
+    responses:
+      '200':
+        description: Thread sucessfully deleted
+ /forums/{forumID}/threads/{threadID}/posts:
+  post:
+    tags:
+      - Posts
+    summary: Create a new post in the thread
+    description: Create a new post in the thread
+    operationId: createPost
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/threadID'
+    requestBody:
+      required: true
+      description: Create a new post
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - accountID
+              - postText
+            properties:
+              accountID:
+                type: integer
+                examples: [1]
+              postText:
+                type: string
+                examples: [Why would you even make up a discussion about taco bell? That seems weird to me.]
+    responses:
+      '201':
+        description: Sucessfully created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/postDetails'
+      default:
+        description: Unable to create post
+  get:
+    tags:
+      - Posts
+    summary: Get all posts in thread
+    description: Get all posts in thread
+    operationId: getAllPosts
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/threadID'
+    responses:
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/postDetails'
+      default:
+        description: Unable to return values
+ /forums/{forumID}/threads/{threadID}/posts/{postID}:
+  get:
+    tags:
+      - Posts
+    summary: Get post by ID
+    description: Get post by ID
+    operationId: getPost
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/threadID'
+      - $ref: '#/components/parameters/postID'
+    responses:
+      '200':
+        description: Successful opperation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/postDetails'
+      default:
+        description: Unable to return values
+  patch:
+    tags:
+      - Posts
+    summary: update post by ID
+    description: update post by ID
+    operationId: updatePost
+    parameters:
+      - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/threadID'
+      - $ref: '#/components/parameters/postID'
+    requestBody:
+      required: true
+      description: Update post
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - postText
+            properties:
+              postText:
+                type: string
+                examples: [This is my new updated string]
+    responses:
+      '200':
+        description: Sucessful operation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/postDetails'
+      default:
+        description: Unable to return values
+components:
+  parameters:
+    forumID:
+      name: forumID
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID of the forum
+    accountID:
+      name: accountID
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID of the account
+    threadID:
+      name: threadID
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID of the thread
+    postID:
+      name: postID
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID of the post
+  schemas:
+    accountDetails:
+      type: object
+      required:
+        - accountID
+        - accountName
+        - createdAt
+      properties:
+        accountID:
+          type: integer
+          examples: [1]
+        accountName:
+          type: string
+          examples: [user1]
+        createdAt:
+          type: string
+          examples: [01/01/26]
+        email:
+          type: string
+          examples: [test@test.com]
+        isAdmin:
+          type: boolean
+    accountCreationCredentials: 
+      type: object
+      required:
+        - email
+        - accountName
+        - password
+      properties:
+        email:
+          type: string
+          examples: [test@test.com]
+        accountName:
+          type: string
+          examples: [user1]
+        password:
+          type: string
+          description: The password will be hashed before being stored
+          examples: [fji3ojif]
+    forumDetails:
+      type: object
+      required:
+        - forumID
+        - forumName
+        - forumDescription
+        - creatorID
+      properties:
+        forumName:
+          type: string
+          examples: [taco bell]
+        forumID:
+          type: integer
+          examples: [1]
+        forumDescription:
+          type: string
+          examples: [This Forum aims to discuss the History of Taco bell. Many things can be discussed, just make sure it comes back to taco]
+        creatorID:
+          type: integer
+          examples: [1]
+        createdAt:
+          type: string
+          examples: [01/01/26]
+    threadDetails:
+      type: object
+      required:
+        - threadTitle
+        - threadPost
+        - creatorID
+      properties:
+        threadID:
+          type: integer
+          examples: [1]
+        createdAt:
+          type: string
+          examples: [01/01/26]
+        threadTitle:
+          type: string
+          examples: [Why are taco's so good?]
+        threadPost:
+          type: string
+          examples: [The flavors of the tacos just work so well. Does anyone know the reason for this?]
+        creatorID:
+          type: integer
+          examples: [1]
+    postDetails:
+      type: object
+      required:
+        - postID
+        - postNumber
+        - createdAt
+        - postText
+        - isDeleted
+      properties:
+        postID:
+          type: integer
+          examples: [1]
+        postNumber:
+          type: integer
+          examples: [1]
+        createdAt:
+          type: string
+          examples: [01/01/26]
+        postText:
+          type: string
+          examples: [Why would you even make up a discussion about taco bell? That seems weird to me.]
+        isDeleted:
+          type: boolean
+          examples: [false]
