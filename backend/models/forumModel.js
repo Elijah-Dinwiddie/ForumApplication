@@ -33,7 +33,20 @@ const forumModel = {
                     fetch next 10 rows only
                 end
             `)
-        return result.recordsets;
+        return result.recordsets[0];
+    },
+
+    // retrieve a forum by its ID
+    getForumByIdModel: async (forumID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('forumID', sql.Int, forumID)
+            .query(`
+                select * from Forums
+                where forum_id = @forumID
+            `)
+        
+        return result.recordset[0];
     }
 }
 

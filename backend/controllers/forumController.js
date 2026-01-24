@@ -24,4 +24,16 @@ exports.getPagForumsController = async (req, res) => {
         res.status(500).json({ message: 'Error fetching forums', error });
         console.error('Error fetching forums:', error);
     }
+},
+
+// Retrieve a forum by ID
+exports.getForumByIdController = async (req, res) => {
+    try {
+        console.log('Fetching forum with ID: ', req.params.forumID);
+        const forum = await forumModel.getForumByIdModel(req.params.forumID);
+        res.status(200).json(forum);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching forum', error });
+        console.error('Error fetching forum:', error);
+    }
 }
