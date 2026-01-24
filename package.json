@@ -20,6 +20,7 @@
   "keywords": [],
   "dependencies": {
     "express": "^5.2.1",
-    "mssql": "^12.2.0"
+    "mssql": "^12.2.0",
+    "node": "^25.4.0"
   }
 }
