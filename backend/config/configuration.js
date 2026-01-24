@@ -1,4 +1,4 @@
-const mssql = require('mssql');
+const sql = require('mssql');
 
 //database configuration
 
@@ -19,7 +19,7 @@ let config = {
 };
 
 
-const poolPromise = new mssql.ConnectionPool(config)
+const poolPromise = new sql.ConnectionPool(config)
     .connect()
     .then(pool => {
         console.log('Connected to MSSQL');
@@ -27,4 +27,4 @@ const poolPromise = new mssql.ConnectionPool(config)
     })
     .catch(err => console.log('Database Connection Failed! Bad Config: ', err));
 
-module.exports = {mssql, poolPromise};
+module.exports = {sql, poolPromise};

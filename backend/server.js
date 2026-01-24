@@ -4,6 +4,9 @@ const app = express();
 const sql = require('mssql');
 const port = 3000;
 
+// Middleware to parse JSON bodies
+app.use(express.json());
+
 app.use('/forums', require('./routes/forum'));
 
 app.listen(port, () => {
