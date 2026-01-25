@@ -7,6 +7,7 @@ app.use(express.json());
 
 // Forum routes
 app.use('/forums', require('./routes/forum'));
+app.use('/accounts', require('./routes/account'));
 
 // Start the server
 app.listen(port, () => {
