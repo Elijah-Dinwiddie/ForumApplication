@@ -36,4 +36,28 @@ exports.getForumByIdController = async (req, res) => {
         res.status(500).json({ message: 'Error fetching forum', error });
         console.error('Error fetching forum:', error);
     }
+},
+
+// Update forum by ID
+exports.updateforumController = async (req, res) => {
+    try {
+        console.log('Updating forum with ID: ', req.params.forumId, ' with data: ', req.body);
+        const updatedForum = await forumModel.updateForumModel(req.params.forumId, req.body);
+        res.status(200).json(updatedForum);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating forum', error });
+        console.error('Error updating forum:', error);
+    }
+},
+
+// Delete forum by ID
+exports.deleteforumController = async (req, res) => {
+    try {
+        console.log('Deleting forum with ID: ', req.params.forumId);
+        const deletedForum = await forumModel.deleteForumModel(req.params.forumId);
+        res.status(200).json(deletedForum);
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting forum', error });
+        console.error('Error deleting forum:', error);
+    }
 }

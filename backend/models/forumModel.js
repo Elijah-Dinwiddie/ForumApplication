@@ -47,7 +47,38 @@ const forumModel = {
             `)
         
         return result.recordset[0];
+    },
+
+    // update forum by its ID
+    updateForumModel: async (forumID, forumData) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('forumID', sql.Int, forumID)
+            .input('forumName', sql.NVarChar, forumData.forumName)
+            .input('forumDescription', sql.NVarChar, forumData.forumDescription)
+            .query(`
+                update Forums
+                set 
+                    forum_name = @forumName,
+                    forum_description = @forumDescription
+                output inserted.*
+                where forum_id = @forumID
+            `)
+        return result.recordset[0];
+    },
+
+    // delete forum by its ID
+    deleteForumModel: async (forumID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('forumID', sql.Int, forumID)
+            .query(`
+                delete from Forums
+                output deleted.*
+                where forum_id = @forumID
+            `)
+        return result.recordset[0];
     }
-}
+};
 
 module.exports = forumModel;
