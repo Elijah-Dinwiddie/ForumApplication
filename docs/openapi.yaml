@@ -60,6 +60,46 @@ paths:
                 $ref: '#/components/schemas/accountDetails'
       default:
         description: Unable to return values
+ /accounts/login:
+  post:
+    tags:
+      - Accounts
+    summary: authenticate User
+    description: authentciate user
+    operationId: authUser
+    requestBody:
+      required: true
+      description: Authenticate login
+      content:
+        application/json:
+          schema:
+            type: object
+            require:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                description: User email
+                examples: [example@domain.com]
+              password:
+                type: string
+                description: User password
+                examples: [1234]
+    responses:
+      '200':
+        description: Account Authenticated
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                JWT:
+                  type: string
+                  description: JWT Authorization
+                  examples: [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30]
+      '401':
+        description: Login attempt failed
  /accounts/{accountID}:
   get:
     tags:

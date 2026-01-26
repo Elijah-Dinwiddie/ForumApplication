@@ -34,6 +34,18 @@ const accountModel = {
                 );
             `)
         return result.recordset[0];
+    },
+
+    // Authenticate account login
+    loginAccountModel: async (loginData) => {
+        const pool = await poolPromise
+        const result = await pool.request()
+            .input('email', sql.NVarChar, loginData.email)
+            .query(`
+                select account_id, password_hash from AccountCredentials
+                where email = @email
+            `)
+        return result.recordset[0];
     }
 }
 
