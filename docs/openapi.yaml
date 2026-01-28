@@ -167,6 +167,8 @@ paths:
     summary: Create a new forum
     description: Create a new forum
     operationId: createForum
+    parameters:
+      - $ref: '#/components/parameters/jwtToken'
     requestBody: 
       required: true
       description: create a new forum in the Forums Table
@@ -303,6 +305,7 @@ paths:
     operationId: createThread
     parameters: 
       - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/jwtToken'
     requestBody: 
       required: true
       description: Create a new thread in the Threads Table
@@ -425,6 +428,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/forumID'
       - $ref: '#/components/parameters/threadID'
+      - $ref: '#/components/parameters/jwtToken'
     requestBody:
       required: true
       description: Create a new post
@@ -525,6 +529,12 @@ paths:
         description: Unable to return values
 components:
   parameters:
+    jwtToken:
+      in: header
+      name: JWT_Token
+      schema:
+        type: string
+      required: true
     forumID:
       name: forumID
       in: path
