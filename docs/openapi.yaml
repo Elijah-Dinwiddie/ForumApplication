@@ -531,7 +531,7 @@ components:
   parameters:
     jwtToken:
       in: header
-      name: JWT_Token
+      name: authorization
       schema:
         type: string
       required: true

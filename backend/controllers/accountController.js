@@ -1,5 +1,6 @@
 const accountModel = require('../models/accountModel');
 const encryptionMiddleware = require('../middleware/bcrypt');
+const jwt = require('jsonwebtoken');
 
 // Create a new account
 //TODO: add check for existing account with same email
@@ -40,7 +41,11 @@ exports.loginAccountController = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password (passwordMatch)' });
         }
 
-        res.status(200).json({ message: 'Login successful' });
+        // Generate JWT token
+        const payload = { account_id: accountInfo.account_id, account_name: req.body.email };
+        const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+
+        res.status(200).json({ message: 'Login successful', accessToken });
     } catch (error) {
         res.status(500).json({ message: 'Error logging in', error });
         console.error('Error logging in:', error);
