@@ -100,6 +100,34 @@ paths:
                   examples: [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30]
       '401':
         description: Login attempt failed
+ /accounts/refresh:
+  post:
+    tags:
+      - Accounts
+    summary: rotate tokens
+    description: rotate tokens
+    operationId: rotateJWT
+    parameters:
+      - $ref: '#/components/parameters/refreshToken'
+      - $ref: '#/components/parameters/jwtToken'
+    responses:
+      '200':
+        description: Tokens refreshed
+        headers:
+          set-cookie:
+            description: New refresh token
+            schema:
+              type: string
+              examples: [	refresh_token=eyJhfesfeiJIUzI1NiIsInR5cCwfspXVCJ9.eyJhY2NvdW50X2lkIjo4LCJhY2NvdW50X2VtYWlsIjoid2h5QG5vdC5jb20iLCJpYXQiOjE3Njk3NDc0MTEsImV4cCI6MTc3fesfejIxMSwianRpIjoiNmfewemQ4MDY0NDYzMWU5few4jM1MTM4MTQwY2QifQ.L9gsgo3S_nbnvM5kXxxoDrmlXcCSnfYrMC9ozv-Ef48; Max-Age=604800; Path=/; Expires=Fri, 06 Feb 2026 04:30:13 GMT; HttpOnly; Secure; SameSite=Strict]
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  description: JWT Authorization
+                  examples: [eyJhbfewewInR5cf233VCJ9.eyJzdWIiOifewfefeTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lf32siOnRydWfew3fMTUxNjIzOTAyMn0.KMUFsIDTjifeojewFUROf3wh7SmqJp-QV30]
  /accounts/{accountID}:
   get:
     tags:
@@ -529,6 +557,13 @@ paths:
         description: Unable to return values
 components:
   parameters:
+    refreshToken:
+      in: cookie
+      name: refreshToken
+      schema:
+        type: string
+      required: true
+      description: HTTP-only refresh token used to rotate access tokens
     jwtToken:
       in: header
       name: authorization

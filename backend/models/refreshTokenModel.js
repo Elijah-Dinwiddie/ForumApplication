@@ -21,7 +21,37 @@ const refreshTokenModel = {
                 );
             `);
         return result.recordset[0];
+    },
+
+    // get refresh token by jti
+    getRefreshTokenByJtiModel: async (jti) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('jti', sql.NVarChar, jti)
+            .query(`
+                select * from RefreshTokens
+                where jti = @jti;
+            `);
+        return result.recordset[0];
+    },
+
+    // update refresh token's expires_at and replaced_by
+    updateRefreshTokenModel: async (jti, updateData) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('jti', sql.NVarChar, jti)
+            .input('replacedBy', sql.NVarChar, updateData)
+            .query(`
+                update RefreshTokens
+                set
+                    replaced_by = @replacedBy,
+                    revoked_at = GETDATE()
+                output inserted.*
+                where jti = @jti;
+            `)
+        return result.recordset[0];
     }
+
 }
 
 module.exports = refreshTokenModel;
