@@ -65,3 +65,19 @@ GO
 
 ALTER TABLE [AccountCredentials] ADD FOREIGN KEY ([account_id]) REFERENCES [Accounts] ([account_id])
 GO
+
+CREATE TABLE RefreshTokens (
+    refresh_token_id INT IDENTITY(1,1) PRIMARY KEY,
+    account_id INT NOT NULL,
+    token_hash NVARCHAR(255) NOT NULL UNIQUE,
+    jti NVARCHAR(255) NOT NULL UNIQUE,
+    expires_at DATETIME2 NOT NULL,
+    revoked_at DATETIME2 NULL,
+    replaced_by NVARCHAR(255) NULL,
+    created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
+    ip NVARCHAR(50) NULL,
+    user_agent NVARCHAR(255) NULL,
+
+    CONSTRAINT FK_RefreshTokens_Accounts FOREIGN KEY (account_id)
+        REFERENCES Accounts(account_id)
+);
