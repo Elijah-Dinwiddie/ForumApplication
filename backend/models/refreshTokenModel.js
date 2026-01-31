@@ -50,6 +50,20 @@ const refreshTokenModel = {
                 where jti = @jti;
             `)
         return result.recordset[0];
+    },
+
+    // revoke all tokens by account ID (used when a token is found to be compromised)
+    revokeAllTokensByAccountIdModel: async (accountId) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('accountId', sql.Int, accountId)
+            .query(`
+                update RefreshTokens
+                set
+                    revoked_at = GETDATE()
+                where account_id = @accountId AND revoked_at IS NULL;                
+            `)
+        return result.rowsAffected;
     }
 
 }

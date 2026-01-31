@@ -22,13 +22,12 @@ exports.createAccountController = async (req, res) => {
         console.log('Account credentials: ', accountCredentials);
         res.status(201).json(accountCredentials);
     } catch (error) {
-        res.status(500).json({ message: 'Error creating account', error });
+        res.status(500).json({ message: 'Error creating account' });
         console.error('Error creating account:', error);
     }
 },
 
 // Login to an account
-// TODO: create util functions for token generation
 exports.loginAccountController = async (req, res) => {
     try {
         console.log('account login info: ', req.body);
@@ -68,12 +67,13 @@ exports.loginAccountController = async (req, res) => {
 
         res.status(200).json({ message: 'Login successful', accessToken });
     } catch (error) {
-        res.status(500).json({ message: 'Error logging in', error });
+        res.status(500).json({ message: 'Error logging in' });
         console.error('Error logging in:', error);
     }
 },
 
 // Rotate access token and refresh token
+// TODO: create util functions for token generation
 exports.refreshController = async (req, res) => {
     try {
         // Get refresh token from HttpOnly cookie
@@ -105,7 +105,15 @@ exports.refreshController = async (req, res) => {
 
         // Check if the refresh token has been revoked
         if  (storedToken.revoked_at) {
+            // Revoke all tokens for this account
+            const revokedTokens = await refreshTokenModel.revokeAllTokensByAccountIdModel(storedToken.account_id);
+            console.log('Revoked all tokens for account ID ', storedToken.account_id, ': ', revokedTokens);
             return res.status(401).json({ message: 'Refresh token has been revoked' });
+        }
+
+        // Check if the refresh token has expired
+        if (storedToken.expires_at < new Date()) {
+            return res.status(401).json({ message: 'Refresh token expired' });
         }
         
         // Compare the provided refresh token with the stored token hash
@@ -136,6 +144,7 @@ exports.refreshController = async (req, res) => {
         }
         console.log('Updated old refresh token: ', updateData);
 
+        // If update fails, return an error
         if (!updateData) {
             return res.status(500).json({ message: 'Could not update old refresh token' });
         }
