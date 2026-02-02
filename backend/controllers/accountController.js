@@ -154,4 +154,39 @@ exports.refreshController = async (req, res) => {
         res.status(500).json({ message: 'Error refreshing tokens' });
         console.error('Error refreshing tokens:', error);
     }
+},
+
+//Update Account name and email
+//TODO: Write tests for if one/both of the request body fields if null or ''
+exports.updateAccountController = async (req, res) => {
+    try {
+        console.log('updating account: ', req.params.accountId);
+        console.log('with: ', req.body);
+        const updatedAccountID = req.params.accountId;
+        const updateInformation = req.body
+
+        // if no data inputed return 406 Not acceptable
+        if ((!updateInformation.email || updateInformation.email === '') && (!updateInformation.accountName || updateInformation.accountName === '')) {
+            res.status(406).json({ message: "No data given"});
+        }
+        else if (!updateInformation.email || updateInformation.email === '') { // update only name if no email given
+            const updatedAccountName = await accountModel.updateAccountNameModel(updatedAccountID, updateInformation);
+            console.log('updatedAccount results1: ', updatedAccountName);
+            res.status(200).json({ message: 'account updated', updatedAccountName });
+        }
+        else if (!updateInformation.accountName || updateInformation.accountName === '') { // update only email if no name given
+            const updatedAccountEmail = await accountModel.updateAccountEmailModel(updatedAccountID, updateInformation)
+            console.log('updatedAccount results2: ', updatedAccountEmail);
+            res.status(200).json({ message: 'account updated', updatedAccountEmail});
+        }
+        else { // update both name and email
+            const updatedAccountName = await accountModel.updateAccountNameModel(updatedAccountID, updateInformation);
+            const updatedAccountEmail = await accountModel.updateAccountEmailModel(updatedAccountID, updateInformation);
+            console.log('updatedAccount results3: ', updatedAccountName, updatedAccountEmail);
+            res.status(200).json({ message: 'account updated'});
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating account'});
+        console.error('Error updating account: ', error);
+    }
 }

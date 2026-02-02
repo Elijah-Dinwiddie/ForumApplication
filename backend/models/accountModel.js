@@ -1,6 +1,7 @@
 const {sql, poolPromise} = require('../config/configuration');
 
 const accountModel = {
+    // Create public account info
     createPublicAccountDetailsModel: async (accountName) => {
         const pool = await poolPromise
         const result = await pool.request()
@@ -46,6 +47,38 @@ const accountModel = {
                 where email = @email
             `)
         return result.recordset[0];
+    },
+
+    //Update account name
+    updateAccountNameModel: async (accountID, updateData) => {
+        const pool = await poolPromise
+        const result = await pool.request()
+            .input('accountID', sql.Int, accountID)
+            .input('updatedName', sql.NVarChar, updateData.accountName)
+            .query(`
+                update Accounts
+                set
+                    account_name = @updatedName
+                output inserted.*
+                where account_id = @accountID;
+            `)
+        return result.recordset[0].account_name;
+    },
+
+    //Update account email
+    updateAccountEmailModel: async (accountID, updateData) => {
+        const pool = await poolPromise
+        const result = await pool.request()
+            .input('accountID', sql.Int, accountID)
+            .input('updatedEmail', sql.NVarChar, updateData.email)
+            .query(`
+                update AccountCredentials
+                set
+                    email = @updatedEmail
+                output inserted.*
+                where account_id = @accountID;
+            `)
+        return result.recordset[0].email;
     }
 }
 
