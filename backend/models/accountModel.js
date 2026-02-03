@@ -94,6 +94,21 @@ const accountModel = {
                 where account_id = @accountID;
             `)
         return result.recordset[0];
+    },
+
+    //Get account
+    getAccountModel: async (accountID) => {
+        const pool = await poolPromise
+        const result = await pool.request()
+            .input('accountID', sql.Int, accountID)
+            .query(`
+                select a.account_name, a.account_id, a.created_at, a.is_deleted, ac.email, ac.isAdmin
+                from Accounts a
+                    left join accountCredentials ac on a.account_id = ac.account_id
+                where a.account_id = @accountID;
+            `)
+
+        return result.recordset;
     }
 }
 

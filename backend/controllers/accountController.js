@@ -20,10 +20,10 @@ exports.createAccountController = async (req, res) => {
         //Add info to private account credentials table)
         const accountCredentials = await accountModel.createAccountCredentialsModel(req.body, accountID);
         console.log('Account credentials: ', accountCredentials);
-        res.status(201).json(accountCredentials);
+        return res.status(201).json(accountCredentials);
     } catch (error) {
-        res.status(500).json({ message: 'Error creating account' });
         console.error('Error creating account:', error);
+        return res.status(500).json({ message: 'Error creating account' });
     }
 },
 
@@ -65,10 +65,10 @@ exports.loginAccountController = async (req, res) => {
         const storedToken = await refreshTokenModel.createRefreshTokenModel(tokenData);
         console.log('Stored refresh token: ', storedToken);
 
-        res.status(200).json({ message: 'Login successful', accessToken });
+        return res.status(200).json({ message: 'Login successful', accessToken });
     } catch (error) {
-        res.status(500).json({ message: 'Error logging in' });
         console.error('Error logging in:', error);
+        return res.status(500).json({ message: 'Error logging in' });
     }
 },
 
@@ -149,9 +149,9 @@ exports.refreshController = async (req, res) => {
             return res.status(500).json({ message: 'Could not update old refresh token' });
         }
         
-        res.status(200).json({ message: 'Tokens refreshed', accessToken });
+        return res.status(200).json({ message: 'Tokens refreshed', accessToken });
     } catch (error) {
-        res.status(500).json({ message: 'Error refreshing tokens' });
+        return res.status(500).json({ message: 'Error refreshing tokens' });
         console.error('Error refreshing tokens:', error);
     }
 },
@@ -167,27 +167,27 @@ exports.updateAccountController = async (req, res) => {
 
         // if no data inputed return 406 Not acceptable
         if ((!updateInformation.email || updateInformation.email === '') && (!updateInformation.accountName || updateInformation.accountName === '')) {
-            res.status(406).json({ message: "No data given"});
+            return res.status(406).json({ message: "No data given"});
         }
         else if (!updateInformation.email || updateInformation.email === '') { // update only name if no email given
             const updatedAccountName = await accountModel.updateAccountNameModel(updatedAccountID, updateInformation);
             console.log('updatedAccount results1: ', updatedAccountName);
-            res.status(200).json({ message: 'account updated', updatedAccountName });
+            return res.status(200).json({ message: 'account updated', updatedAccountName });
         }
         else if (!updateInformation.accountName || updateInformation.accountName === '') { // update only email if no name given
             const updatedAccountEmail = await accountModel.updateAccountEmailModel(updatedAccountID, updateInformation)
             console.log('updatedAccount results2: ', updatedAccountEmail);
-            res.status(200).json({ message: 'account updated', updatedAccountEmail});
+            return res.status(200).json({ message: 'account updated', updatedAccountEmail});
         }
         else { // update both name and email
             const updatedAccountName = await accountModel.updateAccountNameModel(updatedAccountID, updateInformation);
             const updatedAccountEmail = await accountModel.updateAccountEmailModel(updatedAccountID, updateInformation);
             console.log('updatedAccount results3: ', updatedAccountName, updatedAccountEmail);
-            res.status(200).json({ message: 'account updated'});
+            return res.status(200).json({ message: 'account updated'});
         }
     } catch (error) {
-        res.status(500).json({ message: 'Error updating account'});
         console.error('Error updating account: ', error);
+        return res.status(500).json({ message: 'Error updating account'});
     }
 }
 
@@ -199,10 +199,30 @@ exports.deleteAccountController = async (req, res) => {
 
         const deleteInfo = await accountModel.deleteAccountModel(accountID);
 
-        res.status(200).json({ message: 'Account deleted'});
+        return res.status(200).json({ message: 'Account deleted'});
 
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting account'});
-        console.error  ('Error deleting account: ', error);
+        return res.status(500).json({ message: 'Error deleting account'});
+        console.error ('Error deleting account: ', error);
+    }
+}
+
+//Get account by ID
+exports.getAccountController = async (req, res) => {
+    try {
+        console.log('Getting Account: ', req.params.accountId);
+        const accountID = req.params.accountId;
+
+        const accountInfo = await accountModel.getAccountModel(accountID);
+
+        if (!accountInfo || accountInfo.length === 0) {
+            return res.status(404).json({ message: 'Account not found'});
+        }
+
+        return res.status(200).json({ message: 'Account Sucessfully retrieved', accountInfo});
+
+    } catch (error) {
+        console.error ('Error getting account: ', error);
+        return res.status(500).json({ message: 'Error getting account'});
     }
 }
