@@ -43,23 +43,6 @@ paths:
          description: Email already registered
        default:
          description: Unexpected Error
-   get:
-    tags:
-      - Accounts
-    summary: Get all accounts
-    description: Get all accounts
-    operationId: getAllAccounts
-    responses:
-      '200':
-        description: successful operation
-        content: 
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/accountDetails'
-      default:
-        description: Unable to return values
  /accounts/login:
   post:
     tags:
@@ -152,6 +135,7 @@ paths:
     operationId: updateAccount
     parameters:
       - $ref: '#/components/parameters/accountID'
+      - $ref: '#/components/parameters/jwtToken'
     requestBody:
       required: true
       description: update account information
@@ -183,6 +167,7 @@ paths:
     operationId: deleteAccount
     parameters:
       - $ref: '#/components/parameters/accountID'
+      - $ref: '#/components/parameters/jwtToken'
     responses:
       '200':
         description: Account deleted

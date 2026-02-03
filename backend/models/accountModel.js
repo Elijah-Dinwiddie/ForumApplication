@@ -79,6 +79,21 @@ const accountModel = {
                 where account_id = @accountID;
             `)
         return result.recordset[0].email;
+    },
+
+    //Delete account
+    deleteAccountModel: async (accountID) => {
+        const pool = await poolPromise
+        const result = await pool.request()
+            .input('accountID', sql.Int, accountID)
+            .query(`
+                update Accounts
+                set
+                    is_deleted = 1
+                output inserted.*
+                where account_id = @accountID;
+            `)
+        return result.recordset[0];
     }
 }
 

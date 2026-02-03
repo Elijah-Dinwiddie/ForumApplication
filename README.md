@@ -81,3 +81,6 @@ CREATE TABLE RefreshTokens (
     CONSTRAINT FK_RefreshTokens_Accounts FOREIGN KEY (account_id)
         REFERENCES Accounts(account_id)
 );
+
+ALTER TABLE Accounts
+ADD is_deleted bit null;

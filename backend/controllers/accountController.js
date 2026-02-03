@@ -190,3 +190,19 @@ exports.updateAccountController = async (req, res) => {
         console.error('Error updating account: ', error);
     }
 }
+
+//Delete account (sets isDeleted to null, will want logic on frontend to display "ACCOUNT DELETE" instead of username for their forums/threads/posts)
+exports.deleteAccountController = async (req, res) => {
+    try {
+        console.log('deleting account: ', req.params.accountId);
+        const accountID = req.params.accountId;
+
+        const deleteInfo = await accountModel.deleteAccountModel(accountID);
+
+        res.status(200).json({ message: 'Account deleted'});
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting account'});
+        console.error  ('Error deleting account: ', error);
+    }
+}
