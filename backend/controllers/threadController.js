@@ -4,10 +4,11 @@ exports.createThreadController = async (req, res) => {
     try {
         const forumID = req.params.forumId;
         const threadInfo = req.body
+        const accountID = req.user.id
 
         console.log("This is the thread Info: ", threadInfo);
         console.log("This is the forumID: ", forumID);
-        const modelResponse = await threadModel.createThreadModel(forumID, threadInfo);
+        const modelResponse = await threadModel.createThreadModel(forumID, threadInfo, accountID);
 
         console.log('the models response: ', modelResponse);
 
