@@ -84,3 +84,6 @@ CREATE TABLE RefreshTokens (
 
 ALTER TABLE Accounts
 ADD is_deleted bit null;
+
+alter table Threads
+add thread_post NVarChar(100);

@@ -13,6 +13,7 @@ app.use(cookieParser());
 // Forum routes
 app.use('/forums', require('./routes/forum'));
 app.use('/accounts', require('./routes/account'));
+app.use('/forums/:forumId/threads', require('./routes/thread'));
 
 // Start the server
 app.listen(port, () => {
