@@ -6,7 +6,7 @@ const auth = require('../middleware/auth.js');
 // Route definitions
 router.post ('/', auth, forumController.createForumController);
 router.get('/', forumController.getPagForumsController);
-router.get('/:forumID', forumController.getForumByIdController);
+router.get('/:forumId', forumController.getForumByIdController);
 router.patch('/:forumId', forumController.updateforumController);
 router.delete('/:forumId', forumController.deleteforumController);
 

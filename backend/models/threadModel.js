@@ -21,6 +21,24 @@ const threadModel = {
             `)
 
             return result.recordset[0];
+    },
+
+    getPagThreadsModel: async (offset, forumID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('offset', sql.Int, offset)
+            .input('forumID', sql.Int, forumID)
+            .query(`
+                begin
+                    select * from Threads
+                    where forum_id = @forumID
+                    order by thread_id
+                    offset @offset rows
+                    fetch next 10 rows only
+                end
+            `)
+
+        return result.recordsets;
     }
 }
 

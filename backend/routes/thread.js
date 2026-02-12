@@ -5,5 +5,6 @@ const auth = require('../middleware/auth.js');
 
 // route definitions
 router.post('/', auth, threadController.createThreadController);
+router.get('/', threadController.getPagThreadController);
 
 module.exports = router;

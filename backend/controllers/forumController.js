@@ -3,9 +3,11 @@ const forumModel = require('../models/forumModel.js');
 // Create a new forum
 exports.createForumController = async (req, res) => {
     try {
+        const accountID = req.user.id
+
         console.log('Creating forum with data:', req.body);
         // Logic to create a forum
-        const forumDetails = await forumModel.createForumModel(req.body);
+        const forumDetails = await forumModel.createForumModel(req.body, accountID);
         res.status(201).json(forumDetails);
     } catch (error) {
         res.status(500).json({ message: 'Error creating forum', error });

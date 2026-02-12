@@ -2,12 +2,12 @@ const {sql, poolPromise} = require('../config/configuration');
 
 const forumModel = {
     // on insert, forumId will be auto generated
-    createForumModel: async (forumData) => {
+    createForumModel: async (forumData, accountID) => {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('forumName', sql.NVarChar, forumData.forumName)
             .input('forumDescription', sql.NVarChar, forumData.forumDescription)
-            .input('createdBy', sql.Int, forumData.creatorID)
+            .input('createdBy', sql.Int, accountID)
             .query(`insert into Forums (forum_name, forum_description, created_by, created_at)
                 output inserted.*
                 values (

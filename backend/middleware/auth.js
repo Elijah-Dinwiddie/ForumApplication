@@ -13,10 +13,11 @@ const authenticateToken = (req, res, next) => {
     if (scheme !== 'Bearer' || !token) {
         return res.status(401).json({ message: 'Missing or unauthorized header' });
     }
-    
+
+    //TODO: Change email to instead be account name
     try {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        req.user = { id: decoded.account_id, name: decoded.account_name };
+        req.user = { id: decoded.account_id, email: decoded.account_email };
         next();
     } catch (error) {
         return res.status(401).json({ message: error.message || 'Unauthorized' });

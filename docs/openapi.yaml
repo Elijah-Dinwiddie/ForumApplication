@@ -192,7 +192,6 @@ paths:
             required:
               - forumName
               - forumDescription
-              - creatorID
             properties:
               forumName:
                 type: string
@@ -200,9 +199,6 @@ paths:
               forumDescription:
                 type: string
                 examples: ["This Forum aims to discuss the History of Taco bell. May things can be discussed, just make sure it comes back to taco"]
-              creatorID:
-                type: integer
-                examples: [1]
     responses:
       '201':
         description: Sucessfully created
@@ -329,7 +325,6 @@ paths:
             required:
               - threadTitle
               - threadPost
-              - creatorID
             properties:
               threadTitle:
                 type: string
@@ -337,9 +332,6 @@ paths:
               threadPost:
                 type: string
                 examples: [The flavors of the tacos just work so well. Does anyone know the reason for this?]
-              creatorID:
-                type: integer
-                examples: [1]
     responses:
       '201':
         description: Sucessfully created
@@ -352,20 +344,37 @@ paths:
   get:
     tags:
       - Threads
-    summary: Get all threads
-    description: Get all threads in forum
+    summary: Get paginated threads
+    description: Get paginated threads in forum topic
     operationId: getAllThreads
     parameters:
       - $ref: '#/components/parameters/forumID'
+      - $ref: '#/components/parameters/offset'
     responses:
       '200':
         description: sucessful operation
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/threadDetails'
+              type: object
+              properties:
+                totalCount:
+                  type: integer
+                  description: total number of forums available
+                  examples: [100]
+                limit:
+                  type: integer
+                  description: number of forums returned per request
+                  examples: [10]
+                offset:
+                  type: integer
+                  description: number of posts skippec
+                  examples: [10]
+                threads:
+                  type: array
+                  description: The threads returned for the query
+                  items:
+                    $ref: '#/components/schemas/threadDetails'
       default:
         description: Unable to return values
  /forums/{forumID}/threads/{threadID}:
@@ -450,12 +459,8 @@ paths:
           schema:
             type: object
             required:
-              - accountID
               - postText
             properties:
-              accountID:
-                type: integer
-                examples: [1]
               postText:
                 type: string
                 examples: [Why would you even make up a discussion about taco bell? That seems weird to me.]
@@ -613,6 +618,8 @@ components:
           type: string
           examples: [test@test.com]
         isAdmin:
+          type: boolean
+        isDeleted:
           type: boolean
     accountCreationCredentials: 
       type: object
