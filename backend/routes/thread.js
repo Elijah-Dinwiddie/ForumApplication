@@ -7,5 +7,6 @@ const auth = require('../middleware/auth.js');
 router.post('/', auth, threadController.createThreadController);
 router.get('/', threadController.getPagThreadController);
 router.get('/:threadId', threadController.getThreadById);
+router.patch('/:threadId', auth, threadController.updateThreadController);
 
 module.exports = router;

@@ -51,6 +51,22 @@ const threadModel = {
                 order by thread_id;
             `)
         return result.recordset[0];
+    },
+
+    updateThreadModel: async (updatePost, forumID, threadID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('threadPost', sql.NVarChar, updatePost)
+            .input('forumID', sql.Int, forumID)
+            .input('threadID', sql.Int, threadID)
+            .query(`
+                update Threads
+                set thread_post = @threadPost
+                output inserted.*
+                where forum_id = @forumID
+                and thread_id = @threadID
+            `)
+        return result.recordset[0];
     }
 }
 

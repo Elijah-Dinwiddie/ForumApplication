@@ -41,12 +41,49 @@ exports.getThreadById = async (req, res) => {
 
         if (thread === "" || !thread) {
             console.log('thread not found')
-            res.status(404).json({message: 'Thread not found'});
+            return res.status(404).json({message: 'Thread not found'});
         }
         console.log('This is req params: ', req.params);
         res.status(200).json( thread );
     } catch (error) {
         console.log('Error getting thread: ', error);
         res.status(500).json({ message: 'Error getting thread'});
+    }
+}
+
+exports.updateThreadController = async (req, res) => {
+    try {
+        const updateThread = req.body.threadPost;
+        const threadID = req.params.threadID;
+        const forumID = req.params.forumID;
+
+        const oldInfo = await threadModel.getThreadById( req.params.forumId, req.params.threadId);
+
+        console.log('user ID according to token: ', req.user.id);
+        console.log('Old information: ', oldInfo);
+
+
+        // check user is the creator of thread
+        if (oldInfo.created_by != req.user.id) {
+            console.log('User not Authorized to update thread');
+            return res.status(401).json({ message: 'Not authorized to update thread'});
+        }
+
+        // Check update information is provided
+        if (!updateThread || updateThread === '') {
+            console.log('No updated post provided');
+            return res.status(400).json({message: 'No updated post provided'})
+        }
+        console.log('updateThread: ', updateThread);
+        console.log('req.params: ', req.params);
+        const updatedThread = await threadModel.updateThreadModel(updateThread, req.params.forumId, req.params.threadId);
+
+        console.log(updatedThread);
+
+        res.status(200).json( updatedThread );
+
+    } catch (error) {
+        console.log('Error updating thread: ', error);
+        res.status(500).json({ message: 'Error updating thread'});
     }
 }

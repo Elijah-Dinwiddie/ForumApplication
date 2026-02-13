@@ -41,6 +41,7 @@ exports.getForumByIdController = async (req, res) => {
 },
 
 // Update forum by ID
+// TODO: Set it to check user creator of Forum. Maybe make it to where only the forum description can be changed. if not make checks for if part of form is null/blank
 exports.updateforumController = async (req, res) => {
     try {
         console.log('Updating forum with ID: ', req.params.forumId, ' with data: ', req.body);
