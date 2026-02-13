@@ -20,6 +20,7 @@ exports.createThreadController = async (req, res) => {
     };
 },
 
+//TODO: Test Edge cases
 exports.getPagThreadController = async (req, res) => {
     try {
         const threads = await threadModel.getPagThreadsModel(req.query.offset, req.params.forumId || 0)
@@ -28,6 +29,24 @@ exports.getPagThreadController = async (req, res) => {
         res.status(200).json( threads );
     } catch (error) {
         console.log('Error getting threads: ', error);
+        res.status(500).json({ message: 'Error getting threads'});
+    }
+}
+
+exports.getThreadById = async (req, res) => {
+    try {
+        const forumID = req.params.forumId;
+        const threadID = req.params.threadId;
+        const thread = await threadModel.getThreadById(forumID, threadID);
+
+        if (thread === "" || !thread) {
+            console.log('thread not found')
+            res.status(404).json({message: 'Thread not found'});
+        }
+        console.log('This is req params: ', req.params);
+        res.status(200).json( thread );
+    } catch (error) {
+        console.log('Error getting thread: ', error);
         res.status(500).json({ message: 'Error getting thread'});
     }
 }
