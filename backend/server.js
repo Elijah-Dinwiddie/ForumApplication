@@ -14,6 +14,7 @@ app.use(cookieParser());
 app.use('/forums', require('./routes/forum'));
 app.use('/accounts', require('./routes/account'));
 app.use('/forums/:forumId/threads', require('./routes/thread'));
+app.use('/forums/:forumId/threads/:threadId/posts', require('./routes/post'));
 
 // Start the server
 app.listen(port, () => {
