@@ -87,3 +87,31 @@ exports.updateThreadController = async (req, res) => {
         res.status(500).json({ message: 'Error updating thread'});
     }
 }
+
+exports.deleteThreadController = async (req, res) => {
+    try {
+        const threadInfo = await threadModel.getThreadById( req.params.forumId, req.params.threadId) || 'NULL';
+
+        console.log('user ID according to token: ', req.user.id);
+        console.log('thread information: ', threadInfo);
+
+        //If thread is not found return 404 error
+        if(threadInfo === 'NULL') {
+            console.log('Thread not found in selected forum');
+            return res.status(404).json({ message: 'Thread not found in selected Forum'});
+        }
+
+        // check user is the creator of thread
+        if(threadInfo.created_by != req.user.id) {
+            console.log('User not Authorized to delete thread');
+            return res.status(401).json({ message: 'Not authorized to delete thread'});
+        }
+
+        const deletedThread = await threadModel.deleteThreadModel(req.params.forumId, req.params.threadId)
+        console.log('Thread deleted: ', deletedThread);
+        res.status(200).json({ message: 'Thread Deleted' });
+    } catch (error) {
+        console.log('Error deleting thread: ', error);
+        res.status(500).json({ message: 'Error deleting thread'});
+    }
+}

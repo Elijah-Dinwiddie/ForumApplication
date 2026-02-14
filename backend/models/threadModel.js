@@ -67,6 +67,20 @@ const threadModel = {
                 and thread_id = @threadID
             `)
         return result.recordset[0];
+    },
+    
+    deleteThreadModel: async (forumID, threadID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('forumID', sql.Int, forumID)
+            .input('threadID', sql.Int, threadID)
+            .query(`
+                delete from Threads
+                output deleted.*
+                where thread_id = @threadID
+                and forum_id = @forumID
+            `)
+        return result.recordset[0];
     }
 }
 

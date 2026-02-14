@@ -413,9 +413,6 @@ paths:
           schema:
             type: object
             properties:
-              threadTitle:
-                type: string
-                examples: [Updated title]
               threadPost:
                 type: string
                 examples: [Updated post is here now]
