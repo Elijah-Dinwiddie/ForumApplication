@@ -473,12 +473,12 @@ paths:
   get:
     tags:
       - Posts
-    summary: Get all posts in thread
-    description: Get all posts in thread
+    summary: Get paginated posts
+    description: Get paginated post
     operationId: getAllPosts
     parameters:
-      - $ref: '#/components/parameters/forumID'
       - $ref: '#/components/parameters/threadID'
+      - $ref: '#/components/parameters/offset'
     responses:
       '200':
         description: Successful operation

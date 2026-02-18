@@ -13,6 +13,21 @@ const postModel = {
                 values (@threadID, @userID, GETDATE(), @post, 0);
             `)
         return result.recordset[0];
+    },
+
+    getPagPostsModel: async (offset, threadID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('threadID', sql.Int, threadID)
+            .input('offset', sql.Int, offset)
+            .query(`
+                select * from posts
+                where thread_id = @threadID
+                order by post_id
+                offset @offset rows
+                fetch next 10 rows only
+            `)
+        return result.recordsets[0];
     }
 }
 
