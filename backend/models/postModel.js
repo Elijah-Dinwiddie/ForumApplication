@@ -28,6 +28,20 @@ const postModel = {
                 fetch next 10 rows only
             `)
         return result.recordsets[0];
+    },
+
+    getPostModel: async (threadID, postID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('threadID', sql.Int, threadID)
+            .input('postID', sql.Int, postID)
+            .query(`
+                select * from posts
+                where thread_id = @threadID
+                and post_id = @postID
+            `)
+
+        return result.recordset;
     }
 }
 

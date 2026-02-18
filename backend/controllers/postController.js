@@ -31,3 +31,21 @@ exports.getPagPostController = async (req, res) => {
         res.status(500).json({ message: 'Error getting paginated posts' });
     }
 }
+
+exports.getPostController = async (req, res) => {
+    try {
+        const threadID = req.params.threadId;
+        const postID = req.params.postId;
+        const post = await postModel.getPostModel(threadID, postID);
+
+        if(!post || post == "") {
+            return res.status(404).json({ message: 'post not found' });
+        }
+
+        console.log('post: ', post);
+        res.status(200).json(post);
+    } catch (error) {
+        console.log('Error getting post', error);
+        res.status(500).json({ message: 'Error getting post' });
+    }
+}
