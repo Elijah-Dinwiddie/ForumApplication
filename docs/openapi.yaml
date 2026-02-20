@@ -477,6 +477,7 @@ paths:
     description: Get paginated post
     operationId: getAllPosts
     parameters:
+      - $ref: '#/components/parameters/forumID'
       - $ref: '#/components/parameters/threadID'
       - $ref: '#/components/parameters/offset'
     responses:
@@ -534,7 +535,7 @@ paths:
                 type: string
                 examples: [This is my new updated string]
               isDeleted:
-                type: bit
+                type: boolean
                 examples: [1]
     responses:
       '200':

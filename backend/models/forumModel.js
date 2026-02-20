@@ -21,7 +21,7 @@ const forumModel = {
     },
 
     // retrieve forums with pagination
-    getPagForumsModel: async (offset, forumID) => {
+    getPagForumsModel: async (offset) => {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('offset', sql.Int, offset)

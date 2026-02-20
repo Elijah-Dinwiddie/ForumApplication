@@ -54,10 +54,10 @@ exports.getThreadById = async (req, res) => {
 exports.updateThreadController = async (req, res) => {
     try {
         const updateThread = req.body.threadPost;
-        const threadID = req.params.threadID;
-        const forumID = req.params.forumID;
+        const threadID = req.params.threadId;
+        const forumID = req.params.forumId;
 
-        const oldInfo = await threadModel.getThreadById( req.params.forumId, req.params.threadId);
+        const oldInfo = await threadModel.getThreadById(forumID, threadID);
 
         console.log('user ID according to token: ', req.user.id);
         console.log('Old information: ', oldInfo);
@@ -76,7 +76,7 @@ exports.updateThreadController = async (req, res) => {
         }
         console.log('updateThread: ', updateThread);
         console.log('req.params: ', req.params);
-        const updatedThread = await threadModel.updateThreadModel(updateThread, req.params.forumId, req.params.threadId);
+        const updatedThread = await threadModel.updateThreadModel(updateThread, forumID, threadID);
 
         console.log(updatedThread);
 

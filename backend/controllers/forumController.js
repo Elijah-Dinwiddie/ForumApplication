@@ -10,7 +10,7 @@ exports.createForumController = async (req, res) => {
         const forumDetails = await forumModel.createForumModel(req.body, accountID);
         res.status(201).json(forumDetails);
     } catch (error) {
-        res.status(500).json({ message: 'Error creating forum', error });
+        res.status(500).json({ message: 'Error creating forum' });
         console.error('Error creating forum:', error);
     }
 }
@@ -23,7 +23,7 @@ exports.getPagForumsController = async (req, res) => {
         console.log('Forums fetched: ', forums);
         res.status(200).json(forums);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching forums', error });
+        res.status(500).json({ message: 'Error fetching forums' });
         console.error('Error fetching forums:', error);
     }
 },
@@ -35,7 +35,7 @@ exports.getForumByIdController = async (req, res) => {
         const forum = await forumModel.getForumByIdModel(req.params.forumID);
         res.status(200).json(forum);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching forum', error });
+        res.status(500).json({ message: 'Error fetching forum' });
         console.error('Error fetching forum:', error);
     }
 },
@@ -48,7 +48,7 @@ exports.updateforumController = async (req, res) => {
         const updatedForum = await forumModel.updateForumModel(req.params.forumId, req.body);
         res.status(200).json(updatedForum);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating forum', error });
+        res.status(500).json({ message: 'Error updating forum' });
         console.error('Error updating forum:', error);
     }
 },
@@ -60,7 +60,7 @@ exports.deleteforumController = async (req, res) => {
         const deletedForum = await forumModel.deleteForumModel(req.params.forumId);
         res.status(200).json(deletedForum);
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting forum', error });
+        res.status(500).json({ message: 'Error deleting forum' });
         console.error('Error deleting forum:', error);
     }
 }

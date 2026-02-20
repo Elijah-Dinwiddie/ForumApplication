@@ -11,7 +11,7 @@ exports.createAccountController = async (req, res) => {
     try {
         console.log('account creation info: ', req.body);
         req.body.password = await encryptionMiddleware.hashItem(req.body.password);
-        console.log('Hashed password: ', req.body.password);
+        
         //Add info to public account table
         const publicAccountDetails = await accountModel.createPublicAccountDetailsModel(req.body.accountName);
         console.log('Public account details: ', publicAccountDetails);
@@ -50,7 +50,7 @@ exports.loginAccountController = async (req, res) => {
 
         // Generate refresh token
         const jti = crypto.randomBytes(16).toString('hex');
-        payload = { ...user, jti: jti };
+        const payload = { ...user, jti: jti };
         const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
         const refreshTokenHash = await encryptionMiddleware.hashItem(refreshToken);
         const tokenData = {
@@ -92,11 +92,8 @@ exports.refreshController = async (req, res) => {
             return res.status(401).json({ message: 'Invalid refresh token' });
         }
 
-        // Decode the refresh token to get the jti
-        const jti = refreshToken ? jwt.decode(refreshToken).jti : null;
-
         // Get the stored refresh token from the database
-        const storedToken = await refreshTokenModel.getRefreshTokenByJtiModel(jti);
+        const storedToken = await refreshTokenModel.getRefreshTokenByJtiModel(decoded.jti);
         
         // If no stored token is found, return an error
         if (!storedToken) {
@@ -137,7 +134,7 @@ exports.refreshController = async (req, res) => {
         // Update old refresh token's revoked_at and replaced_by fields
         let updateData;
         try {
-            updateData = await refreshTokenModel.updateRefreshTokenModel(jti, refreshTokenData.jti);
+            updateData = await refreshTokenModel.updateRefreshTokenModel(decoded.jti, refreshTokenData.jti);
         } catch (error) {
             console.error('Error updating old refresh token:', error);
             return res.status(500).json({ message: 'Could not update old refresh token'});
@@ -151,8 +148,8 @@ exports.refreshController = async (req, res) => {
         
         return res.status(200).json({ message: 'Tokens refreshed', accessToken });
     } catch (error) {
-        return res.status(500).json({ message: 'Error refreshing tokens' });
         console.error('Error refreshing tokens:', error);
+        return res.status(500).json({ message: 'Error refreshing tokens' });
     }
 },
 
@@ -202,8 +199,8 @@ exports.deleteAccountController = async (req, res) => {
         return res.status(200).json({ message: 'Account deleted'});
 
     } catch (error) {
-        return res.status(500).json({ message: 'Error deleting account'});
         console.error ('Error deleting account: ', error);
+        return res.status(500).json({ message: 'Error deleting account'});
     }
 }
 

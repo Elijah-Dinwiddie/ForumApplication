@@ -14,7 +14,6 @@ const authenticateToken = (req, res, next) => {
         return res.status(401).json({ message: 'Missing or unauthorized header' });
     }
 
-    //TODO: Change email to instead be account name
     try {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         req.user = { id: decoded.account_id, email: decoded.account_email };

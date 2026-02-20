@@ -28,7 +28,7 @@ async function generateRefreshToken(account) {
 
   console.log('tokenhash: ', tokenData.token_hash);
   try {
-    refreshTokenModel.createRefreshTokenModel(tokenData);
+    await refreshTokenModel.createRefreshTokenModel(tokenData);
   } catch (error) {
     console.error('Error storing refresh token:', error);
     throw new Error('Could not store refresh token');
