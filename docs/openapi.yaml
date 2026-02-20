@@ -533,6 +533,9 @@ paths:
               postText:
                 type: string
                 examples: [This is my new updated string]
+              isDeleted:
+                type: bit
+                examples: [1]
     responses:
       '200':
         description: Sucessful operation
@@ -689,6 +692,9 @@ components:
         - postText
         - isDeleted
       properties:
+        accountID:
+          type: integer
+          examples: [1]
         postID:
           type: integer
           examples: [1]

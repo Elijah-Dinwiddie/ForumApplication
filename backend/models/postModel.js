@@ -41,6 +41,38 @@ const postModel = {
                 and post_id = @postID
             `)
 
+        return result.recordset[0];
+    },
+
+    updateTextModel: async (updateText, threadID, postID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('updateText', sql.NVarChar, updateText)
+            .input('threadID', sql.Int, threadID)
+            .input('postID', sql.Int, postID)
+            .query(`
+                update posts
+                set post_text = @updateText
+                output inserted.*
+                where thread_id = @threadID
+                and post_id = @postID
+            `)
+        return result.recordset;
+    },
+
+    deletePostModel: async (toDelete, threadID, postID) => {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('toDelete', sql.Bit, toDelete)
+            .input('threadID', sql.Int, threadID)
+            .input('postID', sql.Int, postID)
+            .query(`
+                update posts
+                set is_deleted = @toDelete
+                output inserted.*
+                where thread_id = @threadID
+                and post_id = @postID
+            `)
         return result.recordset;
     }
 }
