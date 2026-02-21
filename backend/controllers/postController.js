@@ -67,7 +67,7 @@ exports.updatePostController = async (req, res) => {
         const oldPost = await postModel.getPostModel(threadID, postID)
 
         //Check user is creator of post
-        if (oldPost.account_id != req.user.id) {
+        if (oldPost.account_id !== req.user.id) {
             console.log('Usere is not creator of post');
             return res.status(401).json({ message: 'Not authorized to update Post'})
         }
@@ -77,7 +77,7 @@ exports.updatePostController = async (req, res) => {
             return res.status(400).json({ message: 'No update info provided' });
         }
         // Ensure only updateText or isDeleted is updated
-        else if ((isDeleted != 0 && isDeleted) && (updateText != "" && updateText)) {
+        else if ((isDeleted !== 0 && isDeleted) && (updateText !== "" && updateText)) {
             return res.status(400).json({ message: 'Cannot update delete post and update text at same time'});
         }
         else if (updateText) {
@@ -93,8 +93,14 @@ exports.updatePostController = async (req, res) => {
             //logic to soft delete post
             updatedPost = await postModel.deletePostModel(isDeleted, threadID, postID);
             console.log('Delted Post: ', updatedPost);
-            res.status(200).json({ message: 'Post Deleted' });
+            return res.status(200).json({ message: 'Post Deleted' });
         }
+
+        if (isDeleted !== (0 || 1)) {
+            return res.status(400).json({ message: 'Incorrect format' });
+        }
+
+        return;
 
     } catch (error) {
         console.log('Error updating post', error)

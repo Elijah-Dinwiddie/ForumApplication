@@ -187,11 +187,16 @@ exports.updateAccountController = async (req, res) => {
     }
 }
 
-//Delete account (sets isDeleted to null, will want logic on frontend to display "ACCOUNT DELETE" instead of username for their forums/threads/posts)
+//Delete account (sets isDeleted to null, will want logic on frontend to display "ACCOUNT DELETED" instead of username for their forums/threads/posts)
 exports.deleteAccountController = async (req, res) => {
     try {
         console.log('deleting account: ', req.params.accountId);
         const accountID = req.params.accountId;
+        const requestAccountID = req.user.id;
+
+        if (accountID !== requestAccountID) {
+            res.status(400).json({ message: 'Not authorized to delete this account' });
+        }
 
         await accountModel.deleteAccountModel(accountID);
 
