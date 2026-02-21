@@ -194,8 +194,11 @@ exports.deleteAccountController = async (req, res) => {
         const accountID = req.params.accountId;
         const requestAccountID = req.user.id;
 
-        if (accountID !== requestAccountID) {
-            res.status(400).json({ message: 'Not authorized to delete this account' });
+        console.log(accountID);
+        console.log(requestAccountID);
+
+        if (accountID != requestAccountID) {
+            return res.status(400).json({ message: 'Not authorized to delete this account' });
         }
 
         await accountModel.deleteAccountModel(accountID);

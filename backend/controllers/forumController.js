@@ -31,8 +31,8 @@ exports.getPagForumsController = async (req, res) => {
 // Retrieve a forum by ID
 exports.getForumByIdController = async (req, res) => {
     try {
-        console.log('Fetching forum with ID: ', req.params.forumID);
-        const forum = await forumModel.getForumByIdModel(req.params.forumID);
+        console.log('Fetching forum with ID: ', req.params.forumId);
+        const forum = await forumModel.getForumByIdModel(req.params.forumId);
 
         if(!forum) {
             console.log('Forum not found');

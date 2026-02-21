@@ -23,7 +23,7 @@ exports.createThreadController = async (req, res) => {
 //TODO: Test Edge cases
 exports.getPagThreadController = async (req, res) => {
     try {
-        const threads = await threadModel.getPagThreadsModel(req.query.offset, req.params.forumId || 0)
+        const threads = await threadModel.getPagThreadsModel((req.query.offset || 0), req.params.forumId)
 
         console.log('threads: ', threads);
         res.status(200).json( threads );
