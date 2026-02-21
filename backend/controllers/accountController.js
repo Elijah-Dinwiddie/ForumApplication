@@ -11,7 +11,7 @@ exports.createAccountController = async (req, res) => {
     try {
         console.log('account creation info: ', req.body);
         req.body.password = await encryptionMiddleware.hashItem(req.body.password);
-        
+
         //Add info to public account table
         const publicAccountDetails = await accountModel.createPublicAccountDetailsModel(req.body.accountName);
         console.log('Public account details: ', publicAccountDetails);
@@ -154,7 +154,6 @@ exports.refreshController = async (req, res) => {
 },
 
 //Update Account name and email
-//TODO: Write tests for if one/both of the request body fields if null or ''
 exports.updateAccountController = async (req, res) => {
     try {
         console.log('updating account: ', req.params.accountId);
@@ -194,7 +193,7 @@ exports.deleteAccountController = async (req, res) => {
         console.log('deleting account: ', req.params.accountId);
         const accountID = req.params.accountId;
 
-        const deleteInfo = await accountModel.deleteAccountModel(accountID);
+        await accountModel.deleteAccountModel(accountID);
 
         return res.status(200).json({ message: 'Account deleted'});
 

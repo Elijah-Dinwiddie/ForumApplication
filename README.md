@@ -87,3 +87,48 @@ ADD is_deleted bit null;
 
 alter table Threads
 add thread_post NVarChar(100);
+
+ALTER TABLE Accounts
+ALTER COLUMN created_at DATETIME2 NOT NULL;
+
+ALTER TABLE Forums
+ALTER COLUMN created_at DATETIME2 NOT NULL;
+
+ALTER TABLE Threads
+ALTER COLUMN created_at DATETIME2 NOT NULL;
+
+ALTER TABLE Posts
+ALTER COLUMN created_at DATETIME2 NOT NULL;
+
+ALTER TABLE Accounts
+ALTER COLUMN account_name NVARCHAR(100) NOT NULL;
+
+ALTER TABLE Forums
+ALTER COLUMN forum_name NVARCHAR(100) NOT NULL;
+
+ALTER TABLE Threads
+ALTER COLUMN thread_name NVARCHAR(100) NOT NULL;
+
+ALTER TABLE Posts
+ALTER COLUMN post_text NVARCHAR(100) NOT NULL;
+
+ALTER TABLE Accounts
+ADD CONSTRAINT DF_Accounts_IsDeleted DEFAULT 0 FOR is_deleted;
+
+ALTER TABLE Posts
+ADD CONSTRAINT DF_Posts_IsDeleted DEFAULT 0 FOR is_deleted;
+
+ALTER TABLE AccountCredentials
+ADD CONSTRAINT DF_AccountCredentials_IsAdmin DEFAULT 0 FOR isAdmin;
+
+ALTER TABLE Posts
+ADD CONSTRAINT FK_Posts_Threads
+FOREIGN KEY (thread_id)
+REFERENCES Threads(thread_id)
+ON DELETE CASCADE;
+
+Alter Table Threads
+ADD CONSTRAINT FK_Threads_Posts
+FOREIGN KEY (forum_id)
+references Forums(forum_id)
+ON DELETE CASCADE;

@@ -43,7 +43,7 @@ exports.getPostController = async (req, res) => {
         }
 
         if(post.is_deleted === 1) {
-            res.status(404).json({ message: 'post has been deleted' })
+            return res.status(404).json({ message: 'post has been deleted' })
         }
 
         console.log('post: ', post);
