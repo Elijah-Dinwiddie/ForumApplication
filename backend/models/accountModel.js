@@ -43,8 +43,10 @@ const accountModel = {
         const result = await pool.request()
             .input('email', sql.NVarChar, loginData.email)
             .query(`
-                select account_id, password_hash from AccountCredentials
-                where email = @email
+                select ac.account_id, ac.password_hash, a.is_deleted 
+                from AccountCredentials as ac 
+                left join Accounts as a on ac.account_id = a.account_id
+                where email = @email;
             `)
         return result.recordset[0];
     },
@@ -107,6 +109,19 @@ const accountModel = {
                     left join accountCredentials ac on a.account_id = ac.account_id
                 where a.account_id = @accountID;
             `)
+
+        return result.recordset[0];
+    },
+
+    //Get accounts with email
+    getAccountsWithEmailModel: async (email) => {
+        const pool = await poolPromise
+        const result = await pool.request()
+        .input('email', sql.NVarChar, email)
+        .query(`
+            select email from accountCredentials
+            where email = @email;
+        `)
 
         return result.recordset;
     }

@@ -4,7 +4,7 @@ const sql = require('mssql');
 
 let config = {
     user: 'sa',
-    password: 'Younever@@ngPassw0rd',
+    password: process.env.password,
     server: 'localhost',
     port: 1434,
     database: 'ForumApplication',

@@ -6,10 +6,18 @@ const crypto = require('crypto');
 const tokens = require('../utils/tokens');
 
 // Create a new account
-//TODO: add check for existing account with same email
 exports.createAccountController = async (req, res) => {
     try {
         console.log('account creation info: ', req.body);
+
+        const emailTaken = await accountModel.getAccountsWithEmailModel(req.body.email);
+
+        console.log('emailtaken: ', emailTaken);
+
+        if(emailTaken.length > 0) {
+            return res.status(409).json({ message: 'Email already registered' });
+        }
+
         req.body.password = await encryptionMiddleware.hashItem(req.body.password);
 
         //Add info to public account table
@@ -33,15 +41,17 @@ exports.loginAccountController = async (req, res) => {
         console.log('account login info: ', req.body);
 
         const accountInfo = await accountModel.loginAccountModel(req.body);
+        console.log('Account info: ', accountInfo);
+
         // If accountID is null or undefined, return an error
         if (!accountInfo) {
-            return res.status(401).json({ message: 'Invalid email or password (accountInfo)' });
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         // Logic to login to an account
         const isPasswordValid = await encryptionMiddleware.checkHash(req.body.password, accountInfo.password_hash);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid email or password (passwordMatch)' });
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         // Generate JWT token
@@ -188,6 +198,7 @@ exports.updateAccountController = async (req, res) => {
 }
 
 //Delete account (sets isDeleted to null, will want logic on frontend to display "ACCOUNT DELETED" instead of username for their forums/threads/posts)
+//TODO
 exports.deleteAccountController = async (req, res) => {
     try {
         console.log('deleting account: ', req.params.accountId);
@@ -198,7 +209,7 @@ exports.deleteAccountController = async (req, res) => {
         console.log(requestAccountID);
 
         if (accountID != requestAccountID) {
-            return res.status(400).json({ message: 'Not authorized to delete this account' });
+            return res.status(403).json({ message: 'Not authorized to delete this account' });
         }
 
         await accountModel.deleteAccountModel(accountID);
