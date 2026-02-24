@@ -102,6 +102,17 @@ exports.refreshController = async (req, res) => {
         let decoded;
         try {
             decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+            const account = await accountModel.getAccountModel(decoded.account_id);
+            console.log('isdeleted: ', account.is_deleted);
+
+            //Check if account is deleted. If so return 401
+            if(account.is_deleted == true) {
+                console.log('The refresh token cannot be used because the account is deleted');
+                return res.status(401).json({ message: 'Invalid refresh token' });
+            }
+
+            console.log('decoded token: ', decoded);
         } catch (err) {
             return res.status(401).json({ message: 'Invalid refresh token' });
         }
