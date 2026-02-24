@@ -186,6 +186,12 @@ exports.updateAccountController = async (req, res) => {
         const updatedAccountID = req.params.accountId;
         const updateInformation = req.body
 
+        const userID = req.user.id
+
+        if (userID != updatedAccountID) {
+            return res.status(403).json({ message: 'Not authorized to update this account' });
+        }
+
         // if no data inputed return 406 Not acceptable
         if ((!updateInformation.email || updateInformation.email === '') && (!updateInformation.accountName || updateInformation.accountName === '')) {
             return res.status(406).json({ message: "No data given"});
@@ -212,7 +218,7 @@ exports.updateAccountController = async (req, res) => {
     }
 }
 
-//Delete account (sets isDeleted to null, will want logic on frontend to display "ACCOUNT DELETED" instead of username for their forums/threads/posts)
+//Delete account (sets isDeleted to true, will want logic on frontend to display "ACCOUNT DELETED" instead of username for their forums/threads/posts)
 exports.deleteAccountController = async (req, res) => {
     try {
         console.log('deleting account: ', req.params.accountId);

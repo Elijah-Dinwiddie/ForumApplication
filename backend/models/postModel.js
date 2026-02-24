@@ -28,7 +28,7 @@ const postModel = {
                 offset @offset rows
                 fetch next 10 rows only
             `)
-        return result.recordsets[0];
+        return result.recordset;
     },
 
     getPostModel: async (threadID, postID) => {
