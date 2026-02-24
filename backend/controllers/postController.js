@@ -1,13 +1,14 @@
 const postModel = require('../models/postModel');
 
-//TODO: implement post number feature or remove it from database
 exports.createPostController = async (req, res) => {
     try {
         console.log('request params: ', req.params);
         const userID = req.user.id;
         const threadID = req.params.threadId;
         const post = req.body.postText;
-        const createdPost = await postModel.createPostModel(userID, threadID, post);
+        const max = await postModel.getMaxPostNumModel(threadID);
+        console.log('max: ', max.max);
+        const createdPost = await postModel.createPostModel(userID, threadID, post, max.max);
 
         console.log('Post created: ', createdPost);
         res.status(201).json({ message: 'Post created'});

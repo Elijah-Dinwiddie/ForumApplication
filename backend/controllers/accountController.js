@@ -213,7 +213,6 @@ exports.updateAccountController = async (req, res) => {
 }
 
 //Delete account (sets isDeleted to null, will want logic on frontend to display "ACCOUNT DELETED" instead of username for their forums/threads/posts)
-//TODO
 exports.deleteAccountController = async (req, res) => {
     try {
         console.log('deleting account: ', req.params.accountId);

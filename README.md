@@ -132,3 +132,12 @@ ADD CONSTRAINT FK_Threads_Posts
 FOREIGN KEY (forum_id)
 references Forums(forum_id)
 ON DELETE CASCADE;
+
+ALTER TABLE Posts
+DROP COLUMN post_number;
+
+alter table Posts
+add  post_number INT not null
+
+alter table Posts
+add constraint PK_thread_num_post_num unique (thread_id, post_number);
