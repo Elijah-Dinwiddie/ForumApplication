@@ -62,6 +62,9 @@ exports.updateThreadController = async (req, res) => {
         console.log('user ID according to token: ', req.user.id);
         console.log('Old information: ', oldInfo);
 
+        if(!oldInfo) {
+            return res.status(404).json({ message: 'Thread not found' });
+        }
 
         // check user is the creator of thread
         if (oldInfo.created_by != req.user.id) {

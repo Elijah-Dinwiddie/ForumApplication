@@ -67,6 +67,10 @@ exports.updatePostController = async (req, res) => {
 
         const oldPost = await postModel.getPostModel(threadID, postID)
 
+        if(!oldPost) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
         //Check user is creator of post
         if (oldPost.account_id !== req.user.id) {
             console.log('Usere is not creator of post');
