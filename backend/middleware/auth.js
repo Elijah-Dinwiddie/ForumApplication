@@ -19,14 +19,6 @@ const authenticateToken = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         console.log('This is to test the decoded:', decoded);
 
-        const account = await accountModel.getAccountModel(decoded.account_id);
-        console.log('This is the account: ', account);
-
-        if(account.is_deleted === true) {
-            console.log('User has been deleted, token should not work')
-            return res.status(401).json({ message: 'invalid credentials'})
-        }
-
         req.user = { id: decoded.account_id, email: decoded.account_email };
         next();
     } catch (error) {

@@ -48,6 +48,10 @@ exports.loginAccountController = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
+        if(accountInfo.is_deleted == true) {
+            return res.status(401).json({ message: 'invalid credentials' });
+        }
+
         // Logic to login to an account
         const isPasswordValid = await encryptionMiddleware.checkHash(req.body.password, accountInfo.password_hash);
         if (!isPasswordValid) {
