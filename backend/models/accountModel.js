@@ -43,7 +43,7 @@ const accountModel = {
         const result = await pool.request()
             .input('email', sql.NVarChar, loginData.email)
             .query(`
-                select ac.account_id, ac.password_hash, a.is_deleted 
+                select ac.account_id, ac.password_hash, a.is_deleted,  ac.isAdmin
                 from AccountCredentials as ac 
                 left join Accounts as a on ac.account_id = a.account_id
                 where email = @email;

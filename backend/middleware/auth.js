@@ -19,7 +19,7 @@ const authenticateToken = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         console.log('This is to test the decoded:', decoded);
 
-        req.user = { id: decoded.account_id, email: decoded.account_email };
+        req.user = { id: decoded.id, email: decoded.accountEmail, isAdmin: decoded.isAdmin };
         next();
     } catch (error) {
         return res.status(401).json({ message: error.message || 'Unauthorized' });

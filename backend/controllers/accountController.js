@@ -59,7 +59,7 @@ exports.loginAccountController = async (req, res) => {
         }
 
         // Generate JWT token
-        const user = { account_id: accountInfo.account_id, account_email: req.body.email };
+        const user = { id: accountInfo.account_id, accountEmail: req.body.email, isAdmin: accountInfo.isAdmin };
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 
         // Generate refresh token
@@ -68,7 +68,7 @@ exports.loginAccountController = async (req, res) => {
         const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
         const refreshTokenHash = await encryptionMiddleware.hashItem(refreshToken);
         const tokenData = {
-            account_id: accountInfo.account_id,
+            id: accountInfo.account_id,
             token_hash: refreshTokenHash,
             jti: jti,
             expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
@@ -102,8 +102,9 @@ exports.refreshController = async (req, res) => {
         let decoded;
         try {
             decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+            console.log('decoded: ', decoded);
 
-            const account = await accountModel.getAccountModel(decoded.account_id);
+            const account = await accountModel.getAccountModel(decoded.id);
             console.log('isdeleted: ', account.is_deleted);
 
             //Check if account is deleted. If so return 401
@@ -147,8 +148,12 @@ exports.refreshController = async (req, res) => {
         }
 
         // Generate new JWT token
-        const user = { account_id: decoded.account_id, account_email: decoded.account_email };
+        console.log('Decoded: ', decoded);
+        const user = { id: decoded.id, accountEmail: decoded.accountEmail, isAdmin: decoded.isAdmin};
+        console.log('user: ', user);
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        const test = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        console.log('this be test: ', test);
 
         // Generate new refresh token
         const refreshTokenData = await tokens.generateRefreshToken(user);
@@ -188,6 +193,7 @@ exports.updateAccountController = async (req, res) => {
 
         const userID = req.user.id
 
+        //TODO allow admin to update all accounts
         if (userID != updatedAccountID) {
             return res.status(403).json({ message: 'Not authorized to update this account' });
         }

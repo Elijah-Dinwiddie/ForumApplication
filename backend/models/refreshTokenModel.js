@@ -5,7 +5,7 @@ const refreshTokenModel = {
     createRefreshTokenModel: async (tokenData) => {
         const pool = await poolPromise;
         const result = await pool.request()
-            .input('accountID', sql.Int, tokenData.account_id)
+            .input('accountID', sql.Int, tokenData.id)
             .input('tokenHash', sql.NVarChar, tokenData.token_hash)
             .input('jti', sql.NVarChar, tokenData.jti)
             .input('expiresAt', sql.DateTime, tokenData.expires_at)
