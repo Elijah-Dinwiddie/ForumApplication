@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const accountModel = require('../models/accountModel');
 
 // Middleware to authenticate JWT tokens
 const authenticateToken = async (req, res, next) => {
@@ -22,7 +21,7 @@ const authenticateToken = async (req, res, next) => {
         req.user = { id: decoded.id, email: decoded.accountEmail, isAdmin: decoded.isAdmin };
         next();
     } catch (error) {
-        return res.status(401).json({ message: error.message || 'Unauthorized' });
+        return res.status(401).json({ messgae: 'Unauthorized' });
     }
 }
 

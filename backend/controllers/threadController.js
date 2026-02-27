@@ -13,7 +13,7 @@ exports.createThreadController = async (req, res) => {
 
         console.log('the models response: ', modelResponse);
 
-        res.status(200).json(modelResponse);
+        res.status(201).json(modelResponse);
     } catch (error) {
         console.log('Error creating thread: ', error);
         res.status(500).json({ message: 'Error creating thread'});

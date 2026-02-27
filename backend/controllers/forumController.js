@@ -58,7 +58,7 @@ exports.updateforumController = async (req, res) => {
 
         if(oldForum.created_by != userID) {
             console.log('Not authorized to update forum');
-            return res.status(401).json({ message: 'Not authorized to update forum' });
+            return res.status(403).json({ message: 'Not authorized to update forum' });
         }
 
         console.log('Updating forum with ID: ', req.params.forumId, ' with data: ', req.body);

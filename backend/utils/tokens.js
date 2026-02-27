@@ -14,18 +14,20 @@ function setRefreshCookie(res, refreshToken) {
   });
 };
 
-async function generateRefreshToken(account) {
+async function generateRefreshToken(account, id) {
   console.log('account: ', account);
   const jti = crypto.randomBytes(16).toString('hex');
-  const payload = { account_id: account.id, account_email: account.accountEmail, jti: jti };
+  const payload = { id: id, account_email: account.accountEmail, jti: jti };
   const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
   const refreshTokenHash = await bcrypt.hashItem(refreshToken, 10);
+  
   const tokenData = {
-    id: account.id,
+    id: id,
     token_hash: refreshTokenHash,
     jti: jti,
     expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   }
+  console.log('This is the token Data for the refesh token', tokenData);
 
   console.log('tokenhash: ', tokenData.token_hash);
   try {

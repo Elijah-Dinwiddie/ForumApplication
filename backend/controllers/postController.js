@@ -74,7 +74,7 @@ exports.updatePostController = async (req, res) => {
         //Check user is creator of post
         if (oldPost.account_id !== req.user.id) {
             console.log('Usere is not creator of post');
-            return res.status(401).json({ message: 'Not authorized to update Post'})
+            return res.status(403).json({ message: 'Not authorized to update Post'})
         }
 
         // Check both isDeleted and updateText is set

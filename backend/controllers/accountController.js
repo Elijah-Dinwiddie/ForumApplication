@@ -62,22 +62,14 @@ exports.loginAccountController = async (req, res) => {
         const user = { id: accountInfo.account_id, accountEmail: req.body.email, isAdmin: accountInfo.isAdmin };
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 
-        // Generate refresh token
-        const jti = crypto.randomBytes(16).toString('hex');
-        const payload = { ...user, jti: jti };
-        const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-        const refreshTokenHash = await encryptionMiddleware.hashItem(refreshToken);
-        const tokenData = {
-            id: accountInfo.account_id,
-            token_hash: refreshTokenHash,
-            jti: jti,
-            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
-        }
-        // Set refresh token as HttpOnly cookie
-        tokens.setRefreshCookie(res, refreshToken);
+        const id = accountInfo.account_id;
+        console.log('ID: ', id);
 
-        const storedToken = await refreshTokenModel.createRefreshTokenModel(tokenData);
-        console.log('Stored refresh token: ', storedToken);
+        // Generate refresh token
+        const refreshTokenData = await tokens.generateRefreshToken(accountInfo, id);
+
+        // Set new refresh token as HttpOnly cookie
+        tokens.setRefreshCookie(res, refreshTokenData.refreshToken);
 
         return res.status(200).json({ message: 'Login successful', accessToken });
     } catch (error) {
@@ -114,7 +106,8 @@ exports.refreshController = async (req, res) => {
             }
 
             console.log('decoded token: ', decoded);
-        } catch (err) {
+        } catch (error) {
+            console.log('Error: ', error);
             return res.status(401).json({ message: 'Invalid refresh token' });
         }
 
@@ -148,15 +141,12 @@ exports.refreshController = async (req, res) => {
         }
 
         // Generate new JWT token
-        console.log('Decoded: ', decoded);
         const user = { id: decoded.id, accountEmail: decoded.accountEmail, isAdmin: decoded.isAdmin};
         console.log('user: ', user);
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-        const test = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        console.log('this be test: ', test);
 
         // Generate new refresh token
-        const refreshTokenData = await tokens.generateRefreshToken(user);
+        const refreshTokenData = await tokens.generateRefreshToken(user, user.id);
         
         // Set new refresh token as HttpOnly cookie
         tokens.setRefreshCookie(res, refreshTokenData.refreshToken);
@@ -239,6 +229,8 @@ exports.deleteAccountController = async (req, res) => {
         }
 
         await accountModel.deleteAccountModel(accountID);
+
+        await refreshTokenModel.revokeAllTokensByAccountIdModel(accountID);
 
         return res.status(200).json({ message: 'Account deleted'});
 
