@@ -67,7 +67,7 @@ exports.updateThreadController = async (req, res) => {
         }
 
         // check user is the creator of thread
-        if (oldInfo.created_by != req.user.id) {
+        if ((oldInfo.created_by != req.user.id) && req.user.isAdmin === false) {
             console.log('User not Authorized to update thread');
             return res.status(401).json({ message: 'Not authorized to update thread'});
         }
@@ -105,7 +105,7 @@ exports.deleteThreadController = async (req, res) => {
         }
 
         // check user is the creator of thread
-        if(threadInfo.created_by != req.user.id) {
+        if((threadInfo.created_by != req.user.id) && req.user.isAdmin === false) {
             console.log('User not Authorized to delete thread');
             return res.status(401).json({ message: 'Not authorized to delete thread'});
         }

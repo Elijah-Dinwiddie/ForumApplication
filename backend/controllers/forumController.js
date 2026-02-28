@@ -56,7 +56,7 @@ exports.updateforumController = async (req, res) => {
             return res.status(404).json({ message: 'Forum not found' })
         }
 
-        if(oldForum.created_by != userID) {
+        if((oldForum.created_by != userID) && req.user.isAdmin === false) {
             console.log('Not authorized to update forum');
             return res.status(403).json({ message: 'Not authorized to update forum' });
         }
@@ -81,7 +81,7 @@ exports.deleteforumController = async (req, res) => {
         }
         console.log('oldforum: ', oldForum);
 
-        if(oldForum.created_by != userID) {
+        if((oldForum.created_by != userID) && req.user.isAdmin === false) {
             console.log('Not authorized to delete forum');
             return res.status(401).json({ message: 'Not authorized to delete forum' });
         }

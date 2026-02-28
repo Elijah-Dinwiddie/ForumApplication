@@ -21,6 +21,7 @@ const authenticateToken = async (req, res, next) => {
         req.user = { id: decoded.id, email: decoded.accountEmail, isAdmin: decoded.isAdmin };
         next();
     } catch (error) {
+        console.log('error authorizing: ', error);
         return res.status(401).json({ messgae: 'Unauthorized' });
     }
 }

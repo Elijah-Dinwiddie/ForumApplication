@@ -63,7 +63,6 @@ exports.loginAccountController = async (req, res) => {
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 
         const id = accountInfo.account_id;
-        console.log('ID: ', id);
 
         // Generate refresh token
         const refreshTokenData = await tokens.generateRefreshToken(accountInfo, id);
@@ -184,7 +183,7 @@ exports.updateAccountController = async (req, res) => {
         const userID = req.user.id
 
         //TODO allow admin to update all accounts
-        if (userID != updatedAccountID) {
+        if ((userID != updatedAccountID) && req.user.isAdmin === false) {
             return res.status(403).json({ message: 'Not authorized to update this account' });
         }
 
@@ -224,7 +223,7 @@ exports.deleteAccountController = async (req, res) => {
         console.log(accountID);
         console.log(requestAccountID);
 
-        if (accountID != requestAccountID) {
+        if ((accountID != requestAccountID) && req.user.isAdmin === false) {
             return res.status(403).json({ message: 'Not authorized to delete this account' });
         }
 
