@@ -2,9 +2,17 @@ const jwt = require('jsonwebtoken');
 
 // Middleware to authenticate JWT tokens
 const authenticateToken = async (req, res, next) => {
+    if(!req.headers.authorization) {
+        return res.status(400).json({ message: 'authorization not provided' });
+    }
     const authHeader = req.headers.authorization || '';
     const [scheme, tokenFromHeader] = authHeader.split(' ');
     const tokenFromCookie = req.cookies ? req.cookies['token'] : null;
+    
+    if(!tokenFromHeader && !tokenFromCookie) {
+        return res.status(400).json({ message: 'No token provided' });
+    }
+
 
     const token = scheme === 'Bearer' && tokenFromHeader ? tokenFromHeader : tokenFromCookie;
 

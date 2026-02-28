@@ -5,6 +5,11 @@ exports.createForumController = async (req, res) => {
     try {
         const accountID = req.user.id
 
+        //validate input is provided
+        if (!req.body.forumName || !req.body.forumDescription || !accountID) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
+
         console.log('Creating forum with data:', req.body);
         // Logic to create a forum
         const forumDetails = await forumModel.createForumModel(req.body, accountID);
@@ -49,6 +54,11 @@ exports.getForumByIdController = async (req, res) => {
 // TODO: Maybe make it to where only the forum description can be changed. if not make checks for if part of form is null/blank
 exports.updateforumController = async (req, res) => {
     try {
+
+        if(!req.user.id || !req.body.forumName || !req.body.forumDescription) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
+
         const userID = req.user.id;
         const oldForum = await forumModel.getForumByIdModel(req.params.forumId);
 
@@ -73,6 +83,10 @@ exports.updateforumController = async (req, res) => {
 // Delete forum by ID
 exports.deleteforumController = async (req, res) => {
     try {
+        if(!req.user.id) {
+            return res.status(400).json({ message: 'Account id not provided' });
+        }
+
         const userID = req.user.id;
         const oldForum = await forumModel.getForumByIdModel(req.params.forumId);
 
@@ -83,7 +97,7 @@ exports.deleteforumController = async (req, res) => {
 
         if((oldForum.created_by != userID) && req.user.isAdmin === false) {
             console.log('Not authorized to delete forum');
-            return res.status(401).json({ message: 'Not authorized to delete forum' });
+            return res.status(403).json({ message: 'Not authorized to delete forum' });
         }
 
         console.log('Deleting forum with ID: ', req.params.forumId);

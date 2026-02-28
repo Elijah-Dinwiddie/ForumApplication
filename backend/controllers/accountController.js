@@ -8,6 +8,10 @@ const tokens = require('../utils/tokens');
 // Create a new account
 exports.createAccountController = async (req, res) => {
     try {
+        if(!req.body.email || !req.body.accountName || !req.body.password) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
+
         console.log('account creation info: ', req.body);
 
         const emailTaken = await accountModel.getAccountsWithEmailModel(req.body.email);
@@ -28,7 +32,7 @@ exports.createAccountController = async (req, res) => {
         //Add info to private account credentials table)
         const accountCredentials = await accountModel.createAccountCredentialsModel(req.body, accountID);
         console.log('Account credentials: ', accountCredentials);
-        return res.status(201).json(accountCredentials);
+        return res.status(201).json({ message: 'Account created' });
     } catch (error) {
         console.error('Error creating account:', error);
         return res.status(500).json({ message: 'Error creating account' });
@@ -38,6 +42,10 @@ exports.createAccountController = async (req, res) => {
 // Login to an account
 exports.loginAccountController = async (req, res) => {
     try {
+        if(!req.body.email || !req.body.password) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
+
         console.log('account login info: ', req.body);
 
         const accountInfo = await accountModel.loginAccountModel(req.body);
@@ -45,7 +53,7 @@ exports.loginAccountController = async (req, res) => {
 
         // If accountID is null or undefined, return an error
         if (!accountInfo) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         if(accountInfo.is_deleted == true) {
@@ -146,9 +154,6 @@ exports.refreshController = async (req, res) => {
 
         // Generate new refresh token
         const refreshTokenData = await tokens.generateRefreshToken(user, user.id);
-        
-        // Set new refresh token as HttpOnly cookie
-        tokens.setRefreshCookie(res, refreshTokenData.refreshToken);
 
         // Update old refresh token's revoked_at and replaced_by fields
         let updateData;
@@ -164,6 +169,9 @@ exports.refreshController = async (req, res) => {
         if (!updateData) {
             return res.status(500).json({ message: 'Could not update old refresh token' });
         }
+
+        // Set new refresh token as HttpOnly cookie
+        tokens.setRefreshCookie(res, refreshTokenData.refreshToken);
         
         return res.status(200).json({ message: 'Tokens refreshed', accessToken });
     } catch (error) {
@@ -175,6 +183,10 @@ exports.refreshController = async (req, res) => {
 //Update Account name and email
 exports.updateAccountController = async (req, res) => {
     try {
+        if(!req.body.accountName || !req.body.email || !req.user.id) {
+            return res.status(400).json({ message: 'Not all fields filled out' });
+        }
+
         console.log('updating account: ', req.params.accountId);
         console.log('with: ', req.body);
         const updatedAccountID = req.params.accountId;
@@ -182,7 +194,6 @@ exports.updateAccountController = async (req, res) => {
 
         const userID = req.user.id
 
-        //TODO allow admin to update all accounts
         if ((userID != updatedAccountID) && req.user.isAdmin === false) {
             return res.status(403).json({ message: 'Not authorized to update this account' });
         }
@@ -216,6 +227,10 @@ exports.updateAccountController = async (req, res) => {
 //Delete account (sets isDeleted to true, will want logic on frontend to display "ACCOUNT DELETED" instead of username for their forums/threads/posts)
 exports.deleteAccountController = async (req, res) => {
     try {
+        if(!req.user.id || !req.params.accountId) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
+
         console.log('deleting account: ', req.params.accountId);
         const accountID = req.params.accountId;
         const requestAccountID = req.user.id;

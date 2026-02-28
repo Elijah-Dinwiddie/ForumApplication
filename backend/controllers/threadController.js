@@ -2,6 +2,9 @@ const threadModel = require('../models/threadModel');
 
 exports.createThreadController = async (req, res) => {
     try {
+        if( !req.user.id || !req.body.threadPost || !req.body.threadTitle) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
         const forumID = req.params.forumId;
         const threadInfo = req.body
         const accountID = req.user.id
@@ -20,7 +23,6 @@ exports.createThreadController = async (req, res) => {
     };
 },
 
-//TODO: Test Edge cases
 exports.getPagThreadController = async (req, res) => {
     try {
         const threads = await threadModel.getPagThreadsModel((req.query.offset || 0), req.params.forumId)
@@ -53,6 +55,9 @@ exports.getThreadById = async (req, res) => {
 
 exports.updateThreadController = async (req, res) => {
     try {
+        if(!req.body.threadPost || !req.user.id) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
         const updateThread = req.body.threadPost;
         const threadID = req.params.threadId;
         const forumID = req.params.forumId;
@@ -93,6 +98,9 @@ exports.updateThreadController = async (req, res) => {
 
 exports.deleteThreadController = async (req, res) => {
     try {
+        if(!req.user.id) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
         const threadInfo = await threadModel.getThreadById( req.params.forumId, req.params.threadId) || 'NULL';
 
         console.log('user ID according to token: ', req.user.id);

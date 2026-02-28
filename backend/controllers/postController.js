@@ -2,7 +2,10 @@ const postModel = require('../models/postModel');
 
 exports.createPostController = async (req, res) => {
     try {
-        console.log('request params: ', req.params);
+        if(!req.user.id || !req.body.postText || !req.params.threadId) {
+            return res.status(400).json({ message: 'Not all fields provided' });
+        }
+
         const userID = req.user.id;
         const threadID = req.params.threadId;
         const post = req.body.postText;
@@ -55,7 +58,6 @@ exports.getPostController = async (req, res) => {
     }
 }
 
-//TODO: Allow admin to also update posts
 exports.updatePostController = async (req, res) => {
     try {
         const isDeleted = req.body.isDeleted;
