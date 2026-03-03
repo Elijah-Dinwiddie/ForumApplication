@@ -183,7 +183,7 @@ exports.refreshController = async (req, res) => {
 //Update Account name and email
 exports.updateAccountController = async (req, res) => {
     try {
-        if(!req.body.accountName || !req.body.email || !req.user.id) {
+        if(!req.body.accountName || !req.body.email) {
             return res.status(400).json({ message: 'Not all fields filled out' });
         }
 
@@ -194,7 +194,7 @@ exports.updateAccountController = async (req, res) => {
 
         const userID = req.user.id
 
-        if ((userID != updatedAccountID) && req.user.isAdmin === false) {
+        if ((userID != updatedAccountID) && !req.user.isAdmin) {
             return res.status(403).json({ message: 'Not authorized to update this account' });
         }
 
@@ -227,10 +227,6 @@ exports.updateAccountController = async (req, res) => {
 //Delete account (sets isDeleted to true, will want logic on frontend to display "ACCOUNT DELETED" instead of username for their forums/threads/posts)
 exports.deleteAccountController = async (req, res) => {
     try {
-        if(!req.user.id || !req.params.accountId) {
-            return res.status(400).json({ message: 'Not all fields provided' });
-        }
-
         console.log('deleting account: ', req.params.accountId);
         const accountID = req.params.accountId;
         const requestAccountID = req.user.id;
@@ -238,7 +234,7 @@ exports.deleteAccountController = async (req, res) => {
         console.log(accountID);
         console.log(requestAccountID);
 
-        if ((accountID != requestAccountID) && req.user.isAdmin === false) {
+        if ((accountID != requestAccountID) && !req.user.isAdmin) {
             return res.status(403).json({ message: 'Not authorized to delete this account' });
         }
 

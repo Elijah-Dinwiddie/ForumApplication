@@ -18,7 +18,7 @@ exports.createForumController = async (req, res) => {
         res.status(500).json({ message: 'Error creating forum' });
         console.error('Error creating forum:', error);
     }
-}
+},
 
 // Retrieve forums with pagination
 exports.getPagForumsController = async (req, res) => {
@@ -51,11 +51,10 @@ exports.getForumByIdController = async (req, res) => {
 },
 
 // Update forum by ID
-// TODO: Maybe make it to where only the forum description can be changed. if not make checks for if part of form is null/blank
-exports.updateforumController = async (req, res) => {
+exports.updateForumController = async (req, res) => {
     try {
 
-        if(!req.user.id || !req.body.forumName || !req.body.forumDescription) {
+        if(!req.body.forumName || !req.body.forumDescription) {
             return res.status(400).json({ message: 'Not all fields provided' });
         }
 
@@ -66,7 +65,7 @@ exports.updateforumController = async (req, res) => {
             return res.status(404).json({ message: 'Forum not found' })
         }
 
-        if((oldForum.created_by != userID) && req.user.isAdmin === false) {
+        if((oldForum.created_by != userID) && !req.user.isAdmin) {
             console.log('Not authorized to update forum');
             return res.status(403).json({ message: 'Not authorized to update forum' });
         }
@@ -81,12 +80,8 @@ exports.updateforumController = async (req, res) => {
 },
 
 // Delete forum by ID
-exports.deleteforumController = async (req, res) => {
+exports.deleteForumController = async (req, res) => {
     try {
-        if(!req.user.id) {
-            return res.status(400).json({ message: 'Account id not provided' });
-        }
-
         const userID = req.user.id;
         const oldForum = await forumModel.getForumByIdModel(req.params.forumId);
 
@@ -95,7 +90,7 @@ exports.deleteforumController = async (req, res) => {
         }
         console.log('oldforum: ', oldForum);
 
-        if((oldForum.created_by != userID) && req.user.isAdmin === false) {
+        if((oldForum.created_by != userID) && !req.user.isAdmin) {
             console.log('Not authorized to delete forum');
             return res.status(403).json({ message: 'Not authorized to delete forum' });
         }

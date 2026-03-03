@@ -2,7 +2,7 @@ const postModel = require('../models/postModel');
 
 exports.createPostController = async (req, res) => {
     try {
-        if(!req.user.id || !req.body.postText || !req.params.threadId) {
+        if(!req.body.postText || !req.params.threadId) {
             return res.status(400).json({ message: 'Not all fields provided' });
         }
 
@@ -74,7 +74,7 @@ exports.updatePostController = async (req, res) => {
         }
 
         //Check user is creator of post
-        if ((oldPost.account_id !== req.user.id) && req.user.isAdmin === false) {
+        if ((oldPost.account_id !== req.user.id) && !req.user.isAdmin) {
             console.log('Usere is not creator of post');
             return res.status(403).json({ message: 'Not authorized to update Post'})
         }

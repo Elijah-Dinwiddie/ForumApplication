@@ -2,7 +2,7 @@ const threadModel = require('../models/threadModel');
 
 exports.createThreadController = async (req, res) => {
     try {
-        if( !req.user.id || !req.body.threadPost || !req.body.threadTitle) {
+        if(!req.body.threadPost || !req.body.threadTitle) {
             return res.status(400).json({ message: 'Not all fields provided' });
         }
         const forumID = req.params.forumId;
@@ -55,7 +55,7 @@ exports.getThreadById = async (req, res) => {
 
 exports.updateThreadController = async (req, res) => {
     try {
-        if(!req.body.threadPost || !req.user.id) {
+        if(!req.body.threadPost) {
             return res.status(400).json({ message: 'Not all fields provided' });
         }
         const updateThread = req.body.threadPost;
@@ -72,7 +72,7 @@ exports.updateThreadController = async (req, res) => {
         }
 
         // check user is the creator of thread
-        if ((oldInfo.created_by != req.user.id) && req.user.isAdmin === false) {
+        if ((oldInfo.created_by != req.user.id) && !req.user.isAdmin) {
             console.log('User not Authorized to update thread');
             return res.status(401).json({ message: 'Not authorized to update thread'});
         }
@@ -98,9 +98,6 @@ exports.updateThreadController = async (req, res) => {
 
 exports.deleteThreadController = async (req, res) => {
     try {
-        if(!req.user.id) {
-            return res.status(400).json({ message: 'Not all fields provided' });
-        }
         const threadInfo = await threadModel.getThreadById( req.params.forumId, req.params.threadId) || 'NULL';
 
         console.log('user ID according to token: ', req.user.id);
@@ -113,7 +110,7 @@ exports.deleteThreadController = async (req, res) => {
         }
 
         // check user is the creator of thread
-        if((threadInfo.created_by != req.user.id) && req.user.isAdmin === false) {
+        if((threadInfo.created_by != req.user.id) && !req.user.isAdmin) {
             console.log('User not Authorized to delete thread');
             return res.status(401).json({ message: 'Not authorized to delete thread'});
         }
