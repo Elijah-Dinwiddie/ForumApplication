@@ -2,7 +2,14 @@
 figma design: https://www.figma.com/design/YZyzvZjWIAt4JsmrKwAI9n/Forum-Webpage?node-id=0-1&t=P0tfZ1Has8oRlKPc-1
 db diagram: https://dbdiagram.io/d/Forum-Web-Application-696d5d8ed6e030a024622c97
 
+Create env file with:
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+isProd=
+port=
+password=
 
+Set up Database locally and run the following to create database:
 
 CREATE TABLE [Accounts] (
   [account_name] nvarchar(100),
