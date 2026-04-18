@@ -36,7 +36,7 @@ const threadModel = {
                 fetch next 10 rows only
             `)
 
-        return result.recordsets;
+        return result.recordset;
     },
 
     getThreadById: async (forumID, threadID) => {
