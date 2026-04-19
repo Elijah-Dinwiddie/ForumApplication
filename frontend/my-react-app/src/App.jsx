@@ -1,97 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const POSTS = [
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5003,
-    created_at: "2026-02-24T19:29:31.953Z",
-    post_text: "no way",
-    is_deleted: false,
-    post_number: 0,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5005,
-    created_at: "2026-02-24T19:30:13.380Z",
-    post_text: "This post is to test",
-    is_deleted: false,
-    post_number: 1,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5006,
-    created_at: "2026-02-24T19:30:14.963Z",
-    post_text: "This post is to test",
-    is_deleted: false,
-    post_number: 2,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5007,
-    created_at: "2026-02-24T19:30:15.663Z",
-    post_text: "This post is to test",
-    is_deleted: false,
-    post_number: 3,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5008,
-    created_at: "2026-02-24T19:30:15.840Z",
-    post_text: "This post is to test",
-    is_deleted: false,
-    post_number: 4,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5009,
-    created_at: "2026-02-24T19:30:15.986Z",
-    post_text: "This post is to test",
-    is_deleted: false,
-    post_number: 5,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5010,
-    created_at: "2026-02-24T19:30:16.133Z",
-    post_text: "This post is to test",
-    is_deleted: false,
-    post_number: 6,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5011,
-    created_at: "2026-02-24T19:30:16.253Z",
-    post_text: "This post is to test",
-    is_deleted: false,
-    post_number: 7,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5012,
-    created_at: "2026-02-24T19:30:16.370Z",
-    post_text: "Yo my dog! 67 67 67 67 67!",
-    is_deleted: false,
-    post_number: 8,
-  },
-  {
-    thread_id: 5,
-    account_id: 8,
-    post_id: 5013,
-    created_at: "2026-02-24T19:30:16.510Z",
-    post_text: "This post is to test",
-    is_deleted: false,
-    post_number: 9,
-  },
-];
+const BASE_URL = "http://localhost:3000"
+let page = 0;
+let forum_id = 3;
+let thread_id = 5;
 
 function Square({ value, onSquareClick }) {
   return (
@@ -132,7 +44,11 @@ function Messages({ posts }) {
 
 function Message({ postNum, POSTS }) {
   console.log("This s the psot: ", POSTS);
-  const post = POSTS[postNum].post_text;
+  const post = POSTS?.[postNum]?.post_text ?? "Loading...";
+
+  if(!post) {
+    post = "this is test";
+  }
 
   return (
     <div className="message">
@@ -152,21 +68,52 @@ function Message({ postNum, POSTS }) {
 
 function Title() {
   return (
-    <p1 className="title">
+    <div className="title">
       <b>Thread Title: </b> Wow this is cool
-    </p1>
+    </div>
   );
 }
 
-export default function Page() {
-  function getUsersInfo() {}
+function PagBar({updatePage}) {
+  return (
+    <div>
+      <button className="pag-button" onClick={() => updatePage(0)}>1</button>
+      <button className="pag-button" onClick={() => updatePage(1)}>2</button>
+      <button className="pag-button" onClick={() => updatePage(2)}>3</button>
+      <button className="pag-button" onClick={() => updatePage(3)}>4</button>
+      <button className="pag-button" onClick={() => updatePage(4)}>5</button>
+    </div>
+  )
+}
 
-  console.log("This: ", POSTS);
+export default function Page() {
+  const [posts, setPosts] = useState(Array(10).fill(null));
+  const [offset, setOffset] = useState(0);
+
+  function updatePage(newPage) {
+    if (page !== newPage)
+      page = newPage;
+      setOffset(newPage * 10);
+  }
+
+  useEffect(() => {
+    async function loadPosts() {
+      const res = await fetch(`${BASE_URL}/forums/${forum_id}/threads/${thread_id}/posts/?offset=${offset}`)
+      const data = await res.json()
+
+      setPosts(data);
+      console.log("Here is the data", data);
+    }
+
+    loadPosts();
+  }, [offset]);
+
   return (
     <div className="full-page">
       <Navbar />
       <Title />
-      <Messages posts={POSTS} />
+      <Messages posts={posts} />
+      <PagBar updatePage={updatePage}/>
     </div>
   );
 }

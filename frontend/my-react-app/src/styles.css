@@ -114,3 +114,8 @@ body {
   margin-bottom: 27px;
   padding-left: 50px;
 }
+
+.pag-button {
+  background: none;
+  border: none;
+}
