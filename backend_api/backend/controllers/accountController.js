@@ -262,7 +262,7 @@ exports.getAccountController = async (req, res) => {
             return res.status(404).json({ message: 'Account not found'});
         }
 
-        return res.status(200).json({ message: 'Account Sucessfully retrieved', accountInfo});
+        return res.status(200).json({accountInfo});
 
     } catch (error) {
         console.error ('Error getting account: ', error);

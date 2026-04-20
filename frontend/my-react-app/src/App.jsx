@@ -5,14 +5,6 @@ let page = 0;
 let forum_id = 3;
 let thread_id = 5;
 
-function Square({ value, onSquareClick }) {
-  return (
-    <button className="square" onClick={onSquareClick}>
-      {value}
-    </button>
-  );
-}
-
 function Navbar() {
   return (
     <div className="nav-bar">
@@ -25,30 +17,26 @@ function Navbar() {
   );
 }
 
-function Messages({ posts }) {
+function Messages({ posts, users }) {
   return (
     <>
-      <Message postNum={0} POSTS={posts} />
-      <Message postNum={1} POSTS={posts} />
-      <Message postNum={2} POSTS={posts} />
-      <Message postNum={3} POSTS={posts} />
-      <Message postNum={4} POSTS={posts} />
-      <Message postNum={5} POSTS={posts} />
-      <Message postNum={6} POSTS={posts} />
-      <Message postNum={7} POSTS={posts} />
-      <Message postNum={8} POSTS={posts} />
-      <Message postNum={9} POSTS={posts} />
+      <Message POSTS={posts[0]} user={users[0]}/>
+      <Message POSTS={posts[1]} user={users[1]}/>
+      <Message POSTS={posts[2]} user={users[2]}/>
+      <Message POSTS={posts[3]} user={users[3]}/>
+      <Message POSTS={posts[4]} user={users[4]}/>
+      <Message POSTS={posts[5]} user={users[5]}/>
+      <Message POSTS={posts[6]} user={users[6]}/>
+      <Message POSTS={posts[7]} user={users[7]}/>
+      <Message POSTS={posts[8]} user={users[8]}/>
+      <Message POSTS={posts[9]} user={users[9]}/>
     </>
   );
 }
 
-function Message({ postNum, POSTS }) {
-  console.log("This s the psot: ", POSTS);
-  const post = POSTS?.[postNum]?.post_text ?? "Loading...";
-
-  if(!post) {
-    post = "this is test";
-  }
+function Message({ POSTS, user }) {
+  const post = POSTS?.post_text ?? "Loading...";
+  const accountName= user?.accountInfo.account_name ?? "Loading...";
 
   return (
     <div className="message">
@@ -59,7 +47,7 @@ function Message({ postNum, POSTS }) {
         ></img>
       </div>
       <div className="post-right">
-        <div className="post-info">User Name - Date commented</div>
+        <div className="post-info">{accountName} - {new Date(POSTS?.created_at).toLocaleString()}</div>
         <div className="post">{post}</div>
       </div>
     </div>
@@ -89,20 +77,38 @@ function PagBar({updatePage}) {
 export default function Page() {
   const [posts, setPosts] = useState(Array(10).fill(null));
   const [offset, setOffset] = useState(0);
+  const [users, setUsers] = useState([]);
 
   function updatePage(newPage) {
-    if (page !== newPage)
-      page = newPage;
-      setOffset(newPage * 10);
+    if (page !== newPage) {
+    page = newPage;
+    setOffset(newPage * 10);
+}
   }
 
   useEffect(() => {
     async function loadPosts() {
-      const res = await fetch(`${BASE_URL}/forums/${forum_id}/threads/${thread_id}/posts/?offset=${offset}`)
-      const data = await res.json()
+ 
+      const postRes = await fetch(`${BASE_URL}/forums/${forum_id}/threads/${thread_id}/posts/?offset=${offset}`)
+      const data = await postRes.json()      
 
       setPosts(data);
+
+      //get all account_id's in messages
+      const preIds = data.map(p=> p.account_id);
+      const ids = preIds.map(x => x ?? 8002);
+
+      // get userinfo for all user id's
+      const userRes = await Promise.all(
+        ids.map(id =>
+          fetch(`${BASE_URL}/accounts/${id}`).then(res => res.json())
+        )
+      );
+      
+      setUsers(userRes);
+
       console.log("Here is the data", data);
+      console.log("here is the user info", userRes);
     }
 
     loadPosts();
@@ -112,7 +118,7 @@ export default function Page() {
     <div className="full-page">
       <Navbar />
       <Title />
-      <Messages posts={posts} />
+      <Messages posts={posts} users={users} />
       <PagBar updatePage={updatePage}/>
     </div>
   );
