@@ -113,6 +113,7 @@ body {
   font-size: 40px;
   margin-bottom: 27px;
   padding-left: 50px;
+  height: auto;
 }
 
 .pag-button {
@@ -123,4 +124,30 @@ body {
 .pag-button:hover {
   color: blue;
   text-decoration: underline;
+}
+
+.post-input-box {
+  width: 868px;
+  height: 105px;
+  vertical-align: top;
+}
+
+.post-input {
+  display: flex;
+  height: 100%;
+  width: 850px;
+  padding: 6px 40px 36px 12px;
+  box-sizing: content-box;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-button {
+  width: 60px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  margin: 8px 62px 12px 798px;
 }

@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 
 const BASE_URL = "http://localhost:3000"
+//Hardcoded data that will be replaced later. Info is recieved in
+// previous page not implemented yet.
 let page = 0;
-let forum_id = 3;
+let forum_id = 8;
 let thread_id = 5;
+let userAccount = {
+  "account_name": "t",
+  "account_id": 1,
+  "created_at": "2026-02-21T20:58:00.000Z",
+  "is_deleted": false,
+  "email": null,
+  "isAdmin": null
+};
 
 function Navbar() {
   return (
@@ -20,23 +30,16 @@ function Navbar() {
 function Messages({ posts, users }) {
   return (
     <>
-      <Message POSTS={posts[0]} user={users[0]}/>
-      <Message POSTS={posts[1]} user={users[1]}/>
-      <Message POSTS={posts[2]} user={users[2]}/>
-      <Message POSTS={posts[3]} user={users[3]}/>
-      <Message POSTS={posts[4]} user={users[4]}/>
-      <Message POSTS={posts[5]} user={users[5]}/>
-      <Message POSTS={posts[6]} user={users[6]}/>
-      <Message POSTS={posts[7]} user={users[7]}/>
-      <Message POSTS={posts[8]} user={users[8]}/>
-      <Message POSTS={posts[9]} user={users[9]}/>
+      {posts.map((post, i) => (
+        <Message key={post.id ?? i} POSTS={post} user={users[i]} />
+      ))}
     </>
   );
 }
 
 function Message({ POSTS, user }) {
   const post = POSTS?.post_text ?? "Loading...";
-  const accountName= user?.accountInfo.account_name ?? "Loading...";
+  const accountName= user?.account_name ?? "Loading...";
 
   return (
     <div className="message">
@@ -54,10 +57,42 @@ function Message({ POSTS, user }) {
   );
 }
 
-function Title() {
+function CreatePost() {
+  const [text, setText] = useState("");
+
+  // function handleSubmit() async (e) => {
+  //   e.preventDefault();
+
+  // }
+
+  return (
+    <div className="message">
+      <div className="user-picture">
+        <img
+          className="image"
+          src="https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
+        ></img>
+      </div>
+      <div className="post-right">
+        <div className="post-info">{userAccount.account_name} - {new Date().toLocaleString()}</div>
+        {/* <form className="post-input" onSubmit={handleSubmit}>
+          <textarea 
+            className="post-input-box" 
+            type="text" 
+            value={text} 
+            onChange={(e) => setText(e.target.value)}
+          />
+          <button className="input-button" type="submit">Post</button>
+        </form> */}
+      </div>
+    </div>
+  )
+};
+
+function Title({threadInfo}) {
   return (
     <div className="title">
-      <b>Thread Title: </b> Wow this is cool
+      <span><b>{threadInfo.thread_name}: </b> {threadInfo.thread_post}</span>
     </div>
   );
 }
@@ -75,9 +110,22 @@ function PagBar({updatePage}) {
 }
 
 export default function Page() {
-  const [posts, setPosts] = useState(Array(10).fill(null));
+  const [posts, setPosts] = useState([]);
   const [offset, setOffset] = useState(0);
   const [users, setUsers] = useState([]);
+  const [threadInfo, setThreadInfo] = useState([]);
+  
+
+  useEffect(() => {
+    async function loadThreadInfo() {
+      const thread = await fetch(`${BASE_URL}/forums/${forum_id}/threads/${thread_id}`)
+      const data = await thread.json();
+      
+      setThreadInfo(data);
+    }
+
+    loadThreadInfo()
+  }, [thread_id]);
 
   function updatePage(newPage) {
     if (page !== newPage) {
@@ -117,8 +165,9 @@ export default function Page() {
   return (
     <div className="full-page">
       <Navbar />
-      <Title />
+      <Title threadInfo={threadInfo}/>
       <Messages posts={posts} users={users} />
+      <CreatePost />
       <PagBar updatePage={updatePage}/>
     </div>
   );
