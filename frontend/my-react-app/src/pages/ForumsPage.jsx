@@ -1,3 +1,10 @@
+import Navbar from "../components/Navbar";
+
 export default function ForumsPage() {
-    return <div>Forums</div>
+    return (
+        <div className="full-page">
+            <Navbar />
+            <div>Forums</div>
+        </div>
+    );
 }

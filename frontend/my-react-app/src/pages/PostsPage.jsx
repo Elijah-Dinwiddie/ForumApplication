@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 
 const BASE_URL = "http://localhost:3000"
@@ -16,20 +17,6 @@ let userAccount = {
   "email": null,
   "isAdmin": null
 };
-
-function Navbar() {
-  return (
-    <div className="nav-bar">
-      <div className="nav-left">
-        <Link className="link" to='/home_page'>Homepage</Link>
-      </div>
-      <div className="nav-right">
-        <Link className="forums-link link" to='/forums'>Forums</Link>
-        <Link className="account-link link" to='/login'>Account</Link>
-      </div>
-    </div>
-  );
-}
 
 function Messages({ posts, users }) {
   return (
@@ -86,7 +73,7 @@ function CreatePost() {
             value={text} 
             onChange={(e) => setText(e.target.value)}
           />
-          <button className="input-button" type="submit">Post</button>
+          <button className="post-input-button" type="submit">Post</button>
         </form> */}
       </div>
     </div>
