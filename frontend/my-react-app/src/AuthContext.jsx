@@ -9,6 +9,26 @@ export function AuthProvider({children}) {
   const [auth, setAuth] = useState(null);
   const [userID, setUserID] = useState(null);
   const [accountInfo, setAccountInfo] = useState(null);
+  
+  useEffect(() => {
+    if (auth == null) {
+        async function tryRefresh() {
+            try {
+                const res = await fetch(`${BASE_URL}/accounts/refresh`, {
+                    method: 'POST',
+                    credentials: 'include',
+                });
+
+                const data = await res.json();
+                setAuth(data.accessToken);
+                setUserID(data.returnID);
+            } catch (error) {
+                console.log("Refresh token is old")
+            }
+        }
+        tryRefresh();
+    }
+  }, [auth]);
 
   useEffect(() => {
       async function loadUser() {

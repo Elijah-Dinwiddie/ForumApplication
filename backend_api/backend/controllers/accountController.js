@@ -90,7 +90,7 @@ exports.loginAccountController = async (req, res) => {
 exports.refreshController = async (req, res) => {
     try {
         // Get refresh token from HttpOnly cookie
-        const refreshToken = req.cookies.refreshToken;
+        const refreshToken = req.cookies.refresh_token;
 
         // If no refresh token is provided, return an error
         if (!refreshToken) {
@@ -172,8 +172,9 @@ exports.refreshController = async (req, res) => {
 
         // Set new refresh token as HttpOnly cookie
         tokens.setRefreshCookie(res, refreshTokenData.refreshToken);
+        const returnID = user.id;
         
-        return res.status(200).json({ message: 'Tokens refreshed', accessToken });
+        return res.status(200).json({ message: 'Tokens refreshed', accessToken, returnID});
     } catch (error) {
         console.error('Error refreshing tokens:', error);
         return res.status(500).json({ message: 'Error refreshing tokens' });

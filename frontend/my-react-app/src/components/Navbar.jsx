@@ -6,11 +6,7 @@ export default function NavBar() {
     let accountLink;
     const accountLinkName = accountInfo?.account_name ?? "Account";
 
-    if (accountInfo) {
-        accountLink = "/account";
-    } else {
-        accountLink = "/login";
-    }
+    accountLink = accountInfo?.account_id ? "/account" : "/login";
 
     return (
         <div className="nav-bar">
