@@ -78,7 +78,7 @@ exports.loginAccountController = async (req, res) => {
         // Set new refresh token as HttpOnly cookie
         tokens.setRefreshCookie(res, refreshTokenData.refreshToken);
 
-        return res.status(200).json({ message: 'Login successful', accessToken });
+        return res.status(200).json({ message: 'Login successful', accessToken, id });
     } catch (error) {
         console.error('Error logging in:', error);
         return res.status(500).json({ message: 'Error logging in' });

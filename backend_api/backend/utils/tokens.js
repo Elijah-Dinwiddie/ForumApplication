@@ -8,8 +8,8 @@ function setRefreshCookie(res, refreshToken) {
   res.cookie('refresh_token', refreshToken, {
     httpOnly: true,
     secure: isProd,
-    sameSite: 'strict',
-    path: '/api/auth/refresh',
+    sameSite: "Lax",
+    path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
 };

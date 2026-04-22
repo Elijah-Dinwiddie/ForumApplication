@@ -7,7 +7,8 @@ const port = process.env.port;
 const cors = require('cors'); //allows me to query database from front-end
 
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: 'http://localhost:5173',
+  credentials: true
 }));
 
 // Middleware to parse JSON bodies

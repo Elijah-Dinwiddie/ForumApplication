@@ -1,6 +1,17 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 export default function NavBar() {
+    const {accountInfo} = useAuth();
+    let accountLink;
+    const accountLinkName = accountInfo?.account_name ?? "Account";
+
+    if (accountInfo) {
+        accountLink = "/account";
+    } else {
+        accountLink = "/login";
+    }
+
     return (
         <div className="nav-bar">
             <div className="nav-left">
@@ -8,7 +19,7 @@ export default function NavBar() {
             </div>
             <div className="nav-right">
             <Link className="forums-link link" to='/forums'>Forums</Link>
-            <Link className="account-link link" to='/login'>Account</Link>
+            <Link className="account-link link" to={accountLink}>{accountLinkName}</Link>
             </div>
         </div>
     );
