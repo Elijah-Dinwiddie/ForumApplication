@@ -50,7 +50,7 @@ function Message({ POSTS, user }) {
 }
 
 
-function CreatePost() {
+function CreatePost({setNeedLoadPost}) {
   const [postText, setText] = useState("");
 
   // bring in varuables and functions from AuthContext
@@ -94,6 +94,7 @@ function CreatePost() {
                 }    
             }
             const data = await res.json();
+            setNeedLoadPost(true);
             console.log("Response for post creation: ", data);
         } catch (error) {
             console.error(error)
@@ -149,6 +150,7 @@ export default function PostsPage() {
   const [offset, setOffset] = useState(0);
   const [users, setUsers] = useState([]);
   const [threadInfo, setThreadInfo] = useState([]);
+  const [needLoadPost, setNeedLoadPost] = useState([false]);
   
 
   useEffect(() => {
@@ -189,20 +191,22 @@ export default function PostsPage() {
       );
       
       setUsers(userRes);
+      setNeedLoadPost(false);
 
       console.log("Here is the data", data);
       console.log("here is the user info", userRes);
+
     }
 
     loadPosts();
-  }, [offset]);
+  }, [offset, needLoadPost]);
 
   return (
     <div className="full-page">
       <Navbar />
       <Title threadInfo={threadInfo}/>
       <Messages posts={posts} users={users} />
-      <CreatePost />
+      <CreatePost setNeedLoadPost={setNeedLoadPost}/>
       <PagBar updatePage={updatePage}/>
     </div>
   );
