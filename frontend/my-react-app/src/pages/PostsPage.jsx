@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { useAuth } from "../AuthContext";
 
 
 const BASE_URL = "http://localhost:3000"
@@ -48,14 +49,56 @@ function Message({ POSTS, user }) {
   );
 }
 
+
 function CreatePost() {
-  const [text, setText] = useState("");
+  const [postText, setText] = useState("");
 
-  // function handleSubmit() async (e) => {
-  //   e.preventDefault();
+  // bring in varuables and functions from AuthContext
+  const { auth, setAuth, setUserID} = useAuth();
 
-  // }
+  //function to make a post request to make a new post
+  async function createNewPost(token=auth) {
+    const res = await fetch(`${BASE_URL}/forums/${forum_id}/threads/${thread_id}/posts`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            postText,
+        }),
+    });
+    return res;
+  }
 
+  async function handleSubmit(e) {
+        //prevent page reload
+        e.preventDefault();
+        try {
+            //make post request
+            let res = await createNewPost();
+            
+            // if post auth token expired see if refresh token can get new auth token
+            if (res.status === 401) {
+                try {
+                    const refreshRes = await fetch(`${BASE_URL}/accounts/refresh`, {
+                        method: 'POST',
+                        credentials: 'include',
+                    });
+                    const data = await refreshRes.json();
+                    setAuth(data.accessToken);
+                    setUserID(data.returnID);
+                    res = await createNewPost(data.accessToken);
+                } catch (error) {
+                    console.log("Refresh token is old")
+                }    
+            }
+            const data = await res.json();
+            console.log("Response for post creation: ", data);
+        } catch (error) {
+            console.error(error)
+        }
+    }
   return (
     <div className="message">
       <div className="user-picture">
@@ -66,15 +109,15 @@ function CreatePost() {
       </div>
       <div className="post-right">
         <div className="post-info">{userAccount.account_name} - {new Date().toLocaleString()}</div>
-        {/* <form className="post-input" onSubmit={handleSubmit}>
+        <form className="post-input" onSubmit={handleSubmit}>
           <textarea 
             className="post-input-box" 
             type="text" 
-            value={text} 
+            value={postText} 
             onChange={(e) => setText(e.target.value)}
           />
           <button className="post-input-button" type="submit">Post</button>
-        </form> */}
+        </form>
       </div>
     </div>
   )
@@ -84,6 +127,7 @@ function Title({threadInfo}) {
   return (
     <div className="title">
       <span><b>{threadInfo.thread_name}: </b> {threadInfo.thread_post}</span>
+      
     </div>
   );
 }
@@ -122,7 +166,7 @@ export default function PostsPage() {
     if (page !== newPage) {
     page = newPage;
     setOffset(newPage * 10);
-}
+    }
   }
 
   useEffect(() => {

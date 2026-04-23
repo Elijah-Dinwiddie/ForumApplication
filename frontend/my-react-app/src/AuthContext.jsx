@@ -10,7 +10,9 @@ export function AuthProvider({children}) {
   const [userID, setUserID] = useState(null);
   const [accountInfo, setAccountInfo] = useState(null);
   
+  // On page refresh use refesh token to get auth token
   useEffect(() => {
+    console.log("refresh effect running");
     if (auth == null) {
         async function tryRefresh() {
             try {
@@ -28,8 +30,9 @@ export function AuthProvider({children}) {
         }
         tryRefresh();
     }
-  }, [auth]);
+  }, []);
 
+  //Get userInformation on app start up or when userID or authtoken is changed
   useEffect(() => {
       async function loadUser() {
         if(userID === null) {
