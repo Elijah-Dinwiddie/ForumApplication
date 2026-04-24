@@ -7,7 +7,6 @@ import { useAuth } from "../AuthContext";
 const BASE_URL = "http://localhost:3000"
 //Hardcoded data that will be replaced later. Info is recieved in
 // previous page not implemented yet.
-let page = 0;
 let forum_id = 8;
 let thread_id = 5;
 let userAccount = {
@@ -94,6 +93,8 @@ function CreatePost({setNeedLoadPost}) {
                 }    
             }
             const data = await res.json();
+            
+            //run query to show newly created post
             setNeedLoadPost(true);
             console.log("Response for post creation: ", data);
         } catch (error) {
@@ -113,7 +114,6 @@ function CreatePost({setNeedLoadPost}) {
         <form className="post-input" onSubmit={handleSubmit}>
           <textarea 
             className="post-input-box" 
-            type="text" 
             value={postText} 
             onChange={(e) => setText(e.target.value)}
           />
@@ -133,14 +133,21 @@ function Title({threadInfo}) {
   );
 }
 
-function PagBar({updatePage}) {
+/*Page variable increments by 5, each increment then changes the value to the next set so 0 is 1 2 3 4 5.   and when page is 5. the buttons are 6 7 8 9 10 */
+function PagBar({updatePage, updatePagePag, page}) {
   return (
     <div>
-      <button className="pag-button" onClick={() => updatePage(0)}>1</button>
-      <button className="pag-button" onClick={() => updatePage(1)}>2</button>
-      <button className="pag-button" onClick={() => updatePage(2)}>3</button>
-      <button className="pag-button" onClick={() => updatePage(3)}>4</button>
-      <button className="pag-button" onClick={() => updatePage(4)}>5</button>
+      <button onClick={() => updatePagePag(page, -5)}>Prev</button>
+      {[0,1,2,3,4].map(i => (
+        <button
+          key={i}
+          className="pag-button"
+          onClick={() => updatePage(page + i)}
+        >
+          {page + i + 1}
+        </button>
+      ))}
+      <button onClick={() => updatePagePag(page, 5)}>Next</button>
     </div>
   )
 }
@@ -150,7 +157,8 @@ export default function PostsPage() {
   const [offset, setOffset] = useState(0);
   const [users, setUsers] = useState([]);
   const [threadInfo, setThreadInfo] = useState([]);
-  const [needLoadPost, setNeedLoadPost] = useState([false]);
+  const [needLoadPost, setNeedLoadPost] = useState(false);
+  const [page, setPage] = useState(0);
   
 
   useEffect(() => {
@@ -164,11 +172,19 @@ export default function PostsPage() {
     loadThreadInfo()
   }, [thread_id]);
 
-  function updatePage(newPage) {
-    if (page !== newPage) {
-    page = newPage;
-    setOffset(newPage * 10);
+  // update the page value, which determines the offset for posts and the display numbers for  pagBar buttons
+  function updatePagePag(currentPage, changeValue) {
+    if(page==0 && changeValue==-5) {
+      return;
     }
+    setPage(currentPage+changeValue);
+  }
+
+  //
+  function updatePage(newPage) {
+    setOffset(newPage * 10);
+    console.log("Here is page: ", page);
+    console.log("Here is offset: ", offset);
   }
 
   useEffect(() => {
@@ -207,7 +223,7 @@ export default function PostsPage() {
       <Title threadInfo={threadInfo}/>
       <Messages posts={posts} users={users} />
       <CreatePost setNeedLoadPost={setNeedLoadPost}/>
-      <PagBar updatePage={updatePage}/>
+      <PagBar updatePage={updatePage} page={page} updatePagePag={updatePagePag}/>
     </div>
   );
 }
