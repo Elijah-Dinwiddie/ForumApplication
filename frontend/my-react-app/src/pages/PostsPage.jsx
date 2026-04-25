@@ -23,13 +23,15 @@ function Messages({ posts, users }) {
 function Message({ POSTS, user }) {
   const post = POSTS?.post_text ?? "Loading...";
   const accountName= user?.account_name ?? "Loading...";
+  const accountImage = user?.profile_img ?? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg";
+
 
   return (
     <div className="message">
       <div className="user-picture">
         <img
           className="image"
-          src="https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
+          src={accountImage}
         ></img>
       </div>
       <div className="post-right">
