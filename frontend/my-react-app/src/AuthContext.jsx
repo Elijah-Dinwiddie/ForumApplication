@@ -9,6 +9,7 @@ export function AuthProvider({children}) {
   const [auth, setAuth] = useState(null);
   const [userID, setUserID] = useState(null);
   const [accountInfo, setAccountInfo] = useState(null);
+  const [reloadInfo, setReloadInfo] = useState(true);
   
   // On page refresh use refesh token to get auth token
   useEffect(() => {
@@ -45,13 +46,13 @@ export function AuthProvider({children}) {
         setAccountInfo(data);
 
       }
-  
       loadUser();
-    }, [userID, auth]);
+      setReloadInfo(false)
+  }, [userID, auth, reloadInfo]);
 
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, setUserID, accountInfo}}>
+    <AuthContext.Provider value={{ auth, setAuth, setUserID, accountInfo, setReloadInfo}}>
       {children}
     </AuthContext.Provider>
   );
