@@ -37,7 +37,8 @@ export function AuthProvider({children}) {
   useEffect(() => {
       async function loadUser() {
         if(userID === null) {
-            return;
+          setAccountInfo(null);
+          return;
         }
    
         const res = await fetch(`${BASE_URL}/accounts/${userID}`);

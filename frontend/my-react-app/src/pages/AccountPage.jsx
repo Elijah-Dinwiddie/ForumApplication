@@ -8,6 +8,22 @@ export default function AccountPage() {
     const { accountInfo, auth, setAuth, setUserID, setReloadInfo} = useAuth();
     const [profileImg, setprofileImg] = useState("");
 
+    async function signOut() {
+        try {
+            setAuth(null);
+            setUserID(null);
+
+            await fetch(`${BASE_URL}/accounts/logout`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            return;
+        } catch (error) {
+            console.log('Error signing out', error);
+        }
+    }
+
     async function updateImage(token=auth) {
         try {
             const imageRes = await fetch(`${BASE_URL}/accounts/${accountInfo.account_id}/updateImage`, {
@@ -24,7 +40,7 @@ export default function AccountPage() {
             return imageRes;
         } catch (error) {
             console.log("error updating image");
-            return null
+            return null;
         }
     }
 
@@ -78,6 +94,7 @@ export default function AccountPage() {
                 />
             <button type="submit">Update</button>
             </form>
+            <button onClick={signOut}>Sign Out</button>
         </div>
     );
 }

@@ -298,3 +298,16 @@ exports.getAccountController = async (req, res) => {
         return res.status(500).json({ message: 'Error getting account'});
     }
 }
+
+//Remove refresh token to log out
+exports.logoutAccountController = async (req, res) => {
+    res.cookie("refresh_token", "", {
+        httpOnly: true,
+        secure: process.env.isProd,
+        sameSite: "Lax",
+        path: "/",
+        expires: new Date(0),
+    });
+
+    return res.status(200).json({ message: "Logged out" });
+}
