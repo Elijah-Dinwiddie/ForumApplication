@@ -181,11 +181,39 @@ exports.refreshController = async (req, res) => {
     }
 },
 
-//Update Account name and email
+//Update Account profile image
+exports.updateAccountImageController = async (req, res) => {
+    try {
+        if(!req.body.profileImg) {
+            return res.status(400).json({ message: 'Account image not provided'});
+        }
+
+        const imageLink = req.body.profileImg
+
+        const updatedAccountID = req.params.accountId;
+
+        const userID = req.user.id;
+
+        if((userID != updatedAccountID) && !req.user.isAdmin) {
+            return res.status(403).json({ message: 'Not authorized to update this account'})
+        }
+
+        const updatedAccountImage = await accountModel.updateAccountImageModel(updatedAccountID, imageLink);
+        console.log("Here is what i am sending to the model: ", updatedAccountID, imageLink);
+
+        return res.status(200).json({ message: 'account updated', updatedAccountImage });
+    } catch (error) {
+        console.error('Error updaing account name', error);
+        return res.status(500).json({ message: 'Error updating image'});
+    }
+}
+
+//Update Account name and email and image
 exports.updateAccountController = async (req, res) => {
     try {
-        if(!req.body.accountName || !req.body.email) {
-            return res.status(400).json({ message: 'Not all fields filled out' });
+        console.log('Here is the request', req.body);
+        if(!req.body.accountName && !req.body.email) {
+            return res.status(400).json({ message: 'No fields filled out' });
         }
 
         console.log('updating account: ', req.params.accountId);

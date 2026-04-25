@@ -9,14 +9,6 @@ const BASE_URL = "http://localhost:3000"
 // previous page not implemented yet.
 let forum_id = 8;
 let thread_id = 5;
-let userAccount = {
-  "account_name": "t",
-  "account_id": 1,
-  "created_at": "2026-02-21T20:58:00.000Z",
-  "is_deleted": false,
-  "email": null,
-  "isAdmin": null
-};
 
 function Messages({ posts, users }) {
   return (
@@ -53,7 +45,7 @@ function CreatePost({setNeedLoadPost}) {
   const [postText, setText] = useState("");
 
   // bring in varuables and functions from AuthContext
-  const { auth, setAuth, setUserID} = useAuth();
+  const { auth, setAuth, setUserID, accountInfo} = useAuth();
 
   //function to make a post request to make a new post
   async function createNewPost(token=auth) {
@@ -106,11 +98,11 @@ function CreatePost({setNeedLoadPost}) {
       <div className="user-picture">
         <img
           className="image"
-          src="https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
+          src={accountInfo?.profile_img ?? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"}
         ></img>
       </div>
       <div className="post-right">
-        <div className="post-info">{userAccount.account_name} - {new Date().toLocaleString()}</div>
+        <div className="post-info">{accountInfo?.account_name ?? "Loading"} - {new Date().toLocaleString()}</div>
         <form className="post-input" onSubmit={handleSubmit}>
           <textarea 
             className="post-input-box" 

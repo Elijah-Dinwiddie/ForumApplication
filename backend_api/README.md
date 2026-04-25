@@ -148,3 +148,6 @@ add  post_number INT not null
 
 alter table Posts
 add constraint PK_thread_num_post_num unique (thread_id, post_number);
+
+alter table accounts
+add profile_img nvarchar(255) null;

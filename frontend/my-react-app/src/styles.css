@@ -56,6 +56,7 @@ body {
   width: 123px;
   height: 123px;
   border-radius: 30px;
+  object-fit: cover;
 }
 
 .nav-bar {

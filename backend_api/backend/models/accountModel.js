@@ -83,6 +83,22 @@ const accountModel = {
         return result.recordset[0].email;
     },
 
+    //Update account image
+    updateAccountImageModel: async (accountID, updatedImage) => {
+        const pool = await poolPromise
+        const result = await pool.request()
+            .input('accountID', sql.Int, accountID)
+            .input('updatedImg', sql.NVarChar, updatedImage)
+            .query(`
+                update Accounts
+                set
+                    profile_img = @updatedImg
+                output inserted.*
+                where account_id = @accountID;
+            `)
+        return result.recordset[0];
+    },
+
     //Delete account
     deleteAccountModel: async (accountID) => {
         const pool = await poolPromise
@@ -104,7 +120,7 @@ const accountModel = {
         const result = await pool.request()
             .input('accountID', sql.Int, accountID)
             .query(`
-                select a.account_name, a.account_id, a.created_at, a.is_deleted, ac.email, ac.isAdmin
+                select a.account_name, a.account_id, a.created_at, a.is_deleted, a.profile_img, ac.email, ac.isAdmin
                 from Accounts a
                     left join accountCredentials ac on a.account_id = ac.account_id
                 where a.account_id = @accountID;
