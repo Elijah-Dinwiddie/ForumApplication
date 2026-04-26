@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../AuthContext";
+import { useForumThreadInfo } from "../ForumThreadContext";
+import PagBar from "../components/PagBar";
 
 
-const BASE_URL = "http://localhost:3000"
-//Hardcoded data that will be replaced later. Info is recieved in
-// previous page not implemented yet.
-let forum_id = 8;
-let thread_id = 5;
+const BASE_URL = "http://localhost:3000";
 
 function Messages({ posts, users }) {
   return (
@@ -127,25 +125,6 @@ function Title({threadInfo}) {
   );
 }
 
-/*Page variable increments by 5, each increment then changes the value to the next set so 0 is 1 2 3 4 5.   and when page is 5. the buttons are 6 7 8 9 10 */
-function PagBar({updatePage, updatePagePag, page}) {
-  return (
-    <div>
-      <button onClick={() => updatePagePag(page, -5)}>Prev</button>
-      {[0,1,2,3,4].map(i => (
-        <button
-          key={i}
-          className="pag-button"
-          onClick={() => updatePage(page + i)}
-        >
-          {page + i + 1}
-        </button>
-      ))}
-      <button onClick={() => updatePagePag(page, 5)}>Next</button>
-    </div>
-  )
-}
-
 export default function PostsPage() {
   const [posts, setPosts] = useState([]);
   const [offset, setOffset] = useState(0);
@@ -153,7 +132,8 @@ export default function PostsPage() {
   const [threadInfo, setThreadInfo] = useState([]);
   const [needLoadPost, setNeedLoadPost] = useState(false);
   const [page, setPage] = useState(0);
-  
+
+  const { thread_id, forum_id } = useForumThreadInfo();
 
   useEffect(() => {
     async function loadThreadInfo() {
@@ -165,21 +145,6 @@ export default function PostsPage() {
 
     loadThreadInfo()
   }, [thread_id]);
-
-  // update the page value, which determines the offset for posts and the display numbers for  pagBar buttons
-  function updatePagePag(currentPage, changeValue) {
-    if(page==0 && changeValue==-5) {
-      return;
-    }
-    setPage(currentPage+changeValue);
-  }
-
-  //
-  function updatePage(newPage) {
-    setOffset(newPage * 10);
-    console.log("Here is page: ", page);
-    console.log("Here is offset: ", offset);
-  }
 
   useEffect(() => {
     async function loadPosts() {
@@ -217,7 +182,7 @@ export default function PostsPage() {
       <Title threadInfo={threadInfo}/>
       <Messages posts={posts} users={users} />
       <CreatePost setNeedLoadPost={setNeedLoadPost}/>
-      <PagBar updatePage={updatePage} page={page} updatePagePag={updatePagePag}/>
+      <PagBar offset={offset} setOffset={setOffset} page={page} setPage={setPage}/>
     </div>
   );
 }

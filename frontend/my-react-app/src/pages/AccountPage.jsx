@@ -1,12 +1,14 @@
 import Navbar from "../components/Navbar";
 import { useAuth } from "../AuthContext";
 import {useState} from "react"
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "http://localhost:3000";
 
 export default function AccountPage() {
     const { accountInfo, auth, setAuth, setUserID, setReloadInfo} = useAuth();
     const [profileImg, setprofileImg] = useState("");
+    const navigate = useNavigate();
 
     async function signOut() {
         try {
@@ -18,7 +20,7 @@ export default function AccountPage() {
                 credentials: 'include',
             });
 
-            return;
+            navigate('/login')
         } catch (error) {
             console.log('Error signing out', error);
         }

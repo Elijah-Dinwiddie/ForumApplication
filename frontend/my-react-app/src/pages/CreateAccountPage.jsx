@@ -2,10 +2,13 @@ import Navbar from "../components/Navbar";
 import InputButton from "../components/InputButton";
 import InputArea from "../components/InputArea";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const BASE_URL = "http://localhost:3000";
 
 export default function CreateAccountPage() {
+    const navigate = useNavigate()
     const [accountName, setAccountName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -34,6 +37,7 @@ export default function CreateAccountPage() {
 
             const data = await res.json();
             console.log('Account created sucessfully');
+            navigate("/login");
         } catch (error) {
             console.log('Error creating account', error);
         }

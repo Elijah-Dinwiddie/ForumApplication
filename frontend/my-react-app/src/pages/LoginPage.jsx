@@ -2,6 +2,8 @@ import Navbar from "../components/Navbar";
 import InputButton from "../components/InputButton"
 import { useState } from "react";
 import { useAuth } from "../AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 const BASE_URL = "http://localhost:3000"
 
@@ -9,6 +11,7 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { setAuth, setUserID } = useAuth();
+    const navigate = useNavigate();
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -27,11 +30,11 @@ export default function LoginPage() {
             });
 
             const data = await res.json();
-            console.log("Response for log in: ", data);
+            console.log("Signed in sucessfully!");
             setAuth(data.accessToken);
             setUserID(data.id)
 
-
+            navigate("/account")
         } catch (error) {
             console.error(error)
         }
