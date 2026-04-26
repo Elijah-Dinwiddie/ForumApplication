@@ -40,7 +40,7 @@ export default function LoginPage() {
     return (
         <div className="full-page">
             <Navbar />
-            <div className="login-prompt">
+            <div className="form-prompt login">
                 <div className='sign-in-title'>
                     <b>Sign-in</b>
                 </div>
@@ -75,6 +75,7 @@ export default function LoginPage() {
                         <InputButton whereTo="/home_page" name="Cancel" />
                     </div>
                 </form>
+                <span className="end-gap" />
             </div>
         </div>
     );
