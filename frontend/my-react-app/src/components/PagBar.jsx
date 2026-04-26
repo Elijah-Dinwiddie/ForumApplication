@@ -24,7 +24,7 @@ export default function PagBar({offset, setOffset, page, setPage}) {
       {[0,1,2,3,4].map(i => (
         <button
           key={i}
-          className="pag-button"
+          className="button"
           onClick={() => updatePage(page + i)}
         >
           {page + i + 1}

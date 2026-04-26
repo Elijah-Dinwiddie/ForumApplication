@@ -43,6 +43,7 @@ function Message({ POSTS, user }) {
 
 function CreatePost({setNeedLoadPost}) {
   const [postText, setText] = useState("");
+  const { thread_id, forum_id } = useForumThreadInfo();
 
   // bring in varuables and functions from AuthContext
   const { auth, setAuth, setUserID, accountInfo} = useAuth();

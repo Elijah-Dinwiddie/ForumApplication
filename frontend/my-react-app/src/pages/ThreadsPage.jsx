@@ -6,25 +6,27 @@ import PagBar from "../components/PagBar";
 
 const BASE_URL = "http://localhost:3000";
 
-export default function ForumsPage() {
-    const [forums, setForums] = useState([]);
+export default function ThreadsPage() {
+    const [threads, setThreads] = useState([]);
     const [offset, setOffset] = useState(0);
     const [page, setPage] = useState(0);
 
+    const { forum_id } = useForumThreadInfo();
+
     useEffect(() => {
-        async function loadForums() {
+        async function loadThreads() {
             try {
-                const res = await fetch(`${BASE_URL}/forums/?offset=${offset}`)
+                const res = await fetch(`${BASE_URL}/forums/${forum_id}/threads?offset=${offset}`)
 
                 const data = await res.json();
-                setForums(data);
+                setThreads(data);
 
             } catch (error) {
-                console.log('Unable to load the forums', error);
+                console.log('Unable to load the threads', error);
             }
         }
 
-        loadForums();
+        loadThreads();
     }, [offset])
 
     return (
@@ -33,7 +35,7 @@ export default function ForumsPage() {
             <div className="item-box">
                 <div className="item-box-title">Forums</div>
                 <span className="line" />
-                <Items forums={forums} />
+                <Items threads={threads} />
                 <span className="item-box-pag">
                     <PagBar offset={offset} setOffset={setOffset} page={page} setPage={setPage}/>
                 </span>
@@ -43,26 +45,26 @@ export default function ForumsPage() {
     );
 }
 
-function Items({forums}) {
+function Items({threads}) {
     return (
         <>
-            {forums.map((forum, i) => (
-                <Item key={forum.forum_id} forum={forum} />
+            {threads.map((thread, i) => (
+                <Item key={thread.thread_id} thread={thread} />
             ))}
         </>
     )
 }
 
-function Item({forum}) {
-    const { setForum } = useForumThreadInfo();
+function Item({thread}) {
+    const { setThread } = useForumThreadInfo();
 
     return (
         <>
             <ItemBoxItem 
-                title={forum.forum_name} 
-                description={forum.forum_description}
-                onClick={() => setForum(forum.forum_id)}
-                to={`/threads`}
+                title={thread.thread_name} 
+                description={thread.thread_post}
+                onClick={() => setThread(thread.thread_id)}
+                to={`/`}
             />
         </>
     )
