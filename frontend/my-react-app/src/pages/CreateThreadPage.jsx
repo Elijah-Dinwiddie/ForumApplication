@@ -10,16 +10,16 @@ import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "http://localhost:3000";
 
-export default function CreateForumPage() {
-    const [forumName, setForumName] = useState();
-    const [forumDescription, setForumDescription] = useState();
+export default function CreateThreadPage() {
+    const [threadTitle, setThreadTitle] = useState();
+    const [threadPost, setThreadPost] = useState();
     const { setAuth, setUserID, auth } = useAuth();
-    const { setForum } = useForumThreadInfo();
+    const { forum_id, setThread } = useForumThreadInfo();
     const navigate = useNavigate();
 
 
-    async function createNewForum(token='auth') {
-        const createRes = await fetch(`${BASE_URL}/forums`, {
+    async function createNewThread(token='auth') {
+        const createRes = await fetch(`${BASE_URL}/forums/${forum_id}/threads`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -27,8 +27,8 @@ export default function CreateForumPage() {
                 "authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({
-                forumName,
-                forumDescription,
+                threadTitle,
+                threadPost,
             }),
         });
 
@@ -40,7 +40,7 @@ export default function CreateForumPage() {
         e.preventDefault();
         try {
             //make post request
-            let res = await createNewForum(auth);
+            let res = await createNewThread(auth);
             
             // if post auth token expired see if refresh token can get new auth token
             if (res.status === 401) {
@@ -52,15 +52,15 @@ export default function CreateForumPage() {
                     const data = await refreshRes.json();
                     setAuth(data.accessToken);
                     setUserID(data.returnID);
-                    res = await createNewForum(data.accessToken);
+                    res = await createNewThread(data.accessToken);
 
                     if (res.status === 401) {
-                        console.log("Please sign in to create forum")
+                        console.log("Please sign in to create Thread")
                         navigate('/login');
                         return;
                     }
-                    setForum(res.forum_id)
-                    navigate('/threads')
+                    setThread(res.thread_id)
+                    navigate('/')
                 } catch (error) {
                     console.log("Refresh token is old")
                 }    
@@ -69,7 +69,7 @@ export default function CreateForumPage() {
             
             //run query to show newly created post
             console.log("Response for post creation: ", data);
-            setForum(data.forum_id);
+            setThread(data.thread_id);
             navigate('/threads');
         } catch (error) {
             console.error(error)
@@ -81,28 +81,28 @@ export default function CreateForumPage() {
             <Navbar />
             <form onSubmit={handleSubmit}>
                 <div className="form-prompt">
-                    <div className='sign-in-title'><b>Create Forum</b></div>
+                    <div className='sign-in-title'><b>Create Thread</b></div>
                     <InputArea 
-                        label='Forum Name' 
-                        placeholder='Fortnite Forum' 
+                        label='Thread Name' 
+                        placeholder='Fortnite is good?' 
                         type ='text' 
-                        value={forumName} 
-                        onChange={(e) => setForumName(e.target.value)} 
+                        value={threadTitle} 
+                        onChange={(e) => setThreadTitle(e.target.value)} 
                     />
                     <InputTextArea 
                         label='Description' 
                         placeholder='This is the Description' 
                         type ='text' 
-                        value={forumDescription} 
-                        onChange={(e) => setForumDescription(e.target.value)} 
+                        value={threadPost} 
+                        onChange={(e) => setThreadPost(e.target.value)} 
                         height='130px'
                     />
                     <div className="buttons">
                         <span className="medium-gap" />
-                        <button className="general-button" type="submit">Create Forum</button>
+                        <button className="general-button" type="submit">Create Thread</button>
                         <span className="button-gap" />
                         <InputButton 
-                            whereTo="/forums"
+                            whereTo="/threads"
                             name="Cancel"
                         />
                         <span className="end-gap" />
