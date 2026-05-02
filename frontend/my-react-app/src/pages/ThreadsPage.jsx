@@ -33,7 +33,7 @@ export default function ThreadsPage() {
         <div className="full-page">
             <Navbar />
             <div className="item-box">
-                <div className="item-box-title">Forums</div>
+                <div className="item-box-title">Forum Title {forum_id}</div>
                 <span className="line" />
                 <Items threads={threads} />
                 <span className="item-box-pag">

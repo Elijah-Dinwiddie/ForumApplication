@@ -8,6 +8,7 @@ import Account from "./pages/AccountPage";
 import { AuthProvider } from "./AuthContext";
 import {ForumThreadInfo} from "./ForumThreadContext"
 import ThreadsPage from "./pages/ThreadsPage"
+import CreateForumPage from "./pages/CreateForumPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/create_account" element={<CreateAccount />} />
           <Route path="/account" element={<Account />} />
           <Route path="/threads" element={<ThreadsPage />} />
+          <Route path="/create_forum" element={<CreateForumPage />} />
         </Routes>
       </ForumThreadInfo>
     </AuthProvider>

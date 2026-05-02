@@ -258,6 +258,16 @@ body {
   font-weight: 100;
 }
 
+.input-text-area {
+  font-size: 20px;
+  text-decoration: underline 1px;
+  text-underline-offset: 5px;
+  width: 700px;
+  min-height: 84px;
+  margin: 0px 73px 0px 77px;
+  font-weight: 100;
+}
+
 .input-box {
   margin-top: 12;
   width: 100%;
@@ -267,6 +277,11 @@ body {
   font-size: 16px;
   padding-left: 20px;
   background-color: #F5F3F1;
+  font-family: inherit;
+}
+
+.padding {
+  padding-top: 5px
 }
 
 .input-label {
@@ -288,7 +303,8 @@ body {
   height: 40px;
   width: 100%;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0px 50px 0px 50px;
   font-size: 40px;
   font-weight: 400;
   margin: 26px 0px 25px 0px;

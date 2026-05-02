@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useForumThreadInfo } from "../ForumThreadContext";
 import ItemBoxItem from "../components/ItemBoxItem";
 import PagBar from "../components/PagBar";
+import InputButton from "../components/InputButton";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -31,7 +32,7 @@ export default function ForumsPage() {
         <div className="full-page">
             <Navbar />
             <div className="item-box">
-                <div className="item-box-title">Forums</div>
+                <div className="item-box-title"><span className="middle">Forums</span> <InputButton whereTo="/create_forum" name="Create Forum" /></div>
                 <span className="line" />
                 <Items forums={forums} />
                 <span className="item-box-pag">
