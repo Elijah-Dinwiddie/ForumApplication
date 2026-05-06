@@ -16,10 +16,11 @@ function App() {
     <AuthProvider>
       <ForumThreadInfo>
         <Routes>
-          <Route path="/" element={<PostsPage />} />
+          <Route path="/posts" element={<PostsPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forums" element={<ForumsPage />} />
           <Route path="/home_page" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/create_account" element={<CreateAccount />} />
           <Route path="/account" element={<Account />} />
           <Route path="/threads" element={<ThreadsPage />} />

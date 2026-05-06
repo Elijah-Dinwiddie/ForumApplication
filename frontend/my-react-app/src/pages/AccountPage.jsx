@@ -83,16 +83,17 @@ export default function AccountPage() {
             <div>Username: {accountInfo?.account_name ?? "loading"}</div>
             <div>Email: {accountInfo?.email ?? "loading"}</div>
             <div>Created at: {accountInfo?.created_at ?? "loading"}</div>
-            <div>ID: {accountInfo?.account_id ?? "loading"}</div>
             <img
             className="image"
                 src={accountInfo?.profile_img ?? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"}
             ></img>
+            <div>Update Profile Image with image address (max 255 character)</div>
             <form onSubmit={handleImageSubmit}>
                 <input
                     type="text"
                     value={profileImg}
                     onChange={(e) => setprofileImg(e.target.value)}
+                    placeHolder="cdn.pixabay.com/photo/2015/04/19/08/32/flower-729510_1280.jpg"
                 />
             <button type="submit">Update</button>
             </form>

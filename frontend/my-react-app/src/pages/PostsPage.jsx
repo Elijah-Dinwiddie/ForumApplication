@@ -135,6 +135,8 @@ export default function PostsPage() {
   const [page, setPage] = useState(0);
 
   const { thread_id, forum_id } = useForumThreadInfo();
+  const { auth } = useAuth();
+
 
   useEffect(() => {
     async function loadThreadInfo() {
@@ -182,7 +184,9 @@ export default function PostsPage() {
       <Navbar />
       <Title threadInfo={threadInfo}/>
       <Messages posts={posts} users={users} />
-      <CreatePost setNeedLoadPost={setNeedLoadPost}/>
+      <div>
+        { auth && <CreatePost setNeedLoadPost={setNeedLoadPost}/>}
+      </div>
       <PagBar offset={offset} setOffset={setOffset} page={page} setPage={setPage}/>
     </div>
   );

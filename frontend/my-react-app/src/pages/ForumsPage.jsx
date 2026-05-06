@@ -4,6 +4,7 @@ import { useForumThreadInfo } from "../ForumThreadContext";
 import ItemBoxItem from "../components/ItemBoxItem";
 import PagBar from "../components/PagBar";
 import InputButton from "../components/InputButton";
+import { useAuth } from "../AuthContext";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -11,6 +12,15 @@ export default function ForumsPage() {
     const [forums, setForums] = useState([]);
     const [offset, setOffset] = useState(0);
     const [page, setPage] = useState(0);
+    let whereTo = '/create_forum';
+
+    const { auth } = useAuth();
+
+
+    if(auth == null) {
+        whereTo = '/login'
+    };
+
 
     useEffect(() => {
         async function loadForums() {
@@ -32,7 +42,10 @@ export default function ForumsPage() {
         <div className="full-page">
             <Navbar />
             <div className="item-box">
-                <div className="item-box-title"><span className="middle">Forums</span> <InputButton whereTo="/create_forum" name="Create Forum" /></div>
+                <div className="item-box-title">
+                    <span className="middle">Forums</span>
+                     <InputButton whereTo={whereTo} name="Create Forum" />
+                </div>
                 <span className="line" />
                 <Items forums={forums} />
                 <span className="item-box-pag">

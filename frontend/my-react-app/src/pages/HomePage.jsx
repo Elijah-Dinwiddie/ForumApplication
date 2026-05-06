@@ -20,7 +20,7 @@ export default function HomePage() {
                     title='New Thread' 
                     description='Hey Guys this is the thread post'
                     onClick={() => setInfo(5,8)}
-                    to={`/`}
+                    to={`/posts`}
                 />
                 <ItemBoxItem title='Worst Sesame street season' description='Description of the thread is here'/>
                 <ItemBoxItem title='Worst Sesame street season' description='Description of the thread is here'/>
